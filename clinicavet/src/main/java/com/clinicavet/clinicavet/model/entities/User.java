@@ -14,7 +14,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idusuario")
+    @Column(name = "id")
     private int id;
 
     @Column(name = "nombre", nullable = false, length = 25)
@@ -30,6 +30,6 @@ public class User {
     private boolean active = true;
 
     @ManyToOne
-    @JoinColumn(name = "idrol", nullable = false)
+    @JoinColumn(name = "rol_id", referencedColumnName = "id")
     private Role role;
 }

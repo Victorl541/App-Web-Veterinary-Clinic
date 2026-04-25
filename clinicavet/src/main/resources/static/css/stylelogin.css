@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #eef3ff;
+}
+
+/* Layout principal */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.alert-error {
+    background: #ffe0e0;
+    color: #c0392b;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background: #e0ffe0;
+    color: #27ae60;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Panel izquierdo */
+.left-panel {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Imagen de fondo */
+.left-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("../img/fondo-veterinaria.jpg") center/cover no-repeat;
+    filter: blur(2px) brightness(0.7);
+    transform: scale(1.05);
+}
+
+/* Overlay azul suave */
+.left-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+            135deg,
+            rgba(74, 108, 247, 0.7),
+            rgba(111, 140, 255, 0.6)
+    );
+}
+
+/* Contenido encima */
+.overlay {
+    position: relative;
+    color: white;
+    text-align: center;
+    z-index: 1;
+    padding: 20px;
+}
+
+.overlay h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.overlay p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+/* Panel derecho */
+.right-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f7f9ff;
+}
+
+/* Card */
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background: white;
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+/* Logo */
+.logo {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* Textos */
+.login-card h2 {
+    color: #2d3a8c;
+    margin-bottom: 5px;
+}
+
+.login-card p {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 5px rgba(74, 108, 247, 0.3);
+}
+
+/* Botón */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #4a6cf7;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #3a5bdc;
+}
+
+/* Links */
+.extra {
+    margin-top: 15px;
+}
+
+.extra a {
+    color: #4a6cf7;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.extra a:hover {
+    text-decoration: underline;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        height: 30%;
+    }
+
+    .overlay h1 {
+        font-size: 28px;
+    }
+
+    .overlay p {
+        font-size: 14px;
+    }
+
+    .right-panel {
+        height: 70%;
+    }
+
+    .login-card {
+        margin: 20px;
+        padding: 25px;
+    }
+}
