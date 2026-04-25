@@ -1,0 +1,334 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #eef3ff;
+}
+
+/* HEADER */
+.top-header {
+    background: white;
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6eaf5;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 45px;
+}
+
+.clinic-name {
+    font-weight: bold;
+    color: #2d3a8c;
+    font-size: 16px;
+}
+
+/* USER DROPDOWN */
+.user-dropdown {
+    position: relative;
+}
+
+.user-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.user-toggle:hover {
+    background: #eef3ff;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #4a6cf7;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.user-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    min-width: 220px;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.user-dropdown:hover .user-dropdown-content {
+    display: block;
+}
+
+.user-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: #f7f9ff;
+}
+
+.user-avatar-lg {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #4a6cf7;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.user-dropdown-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #2d3a8c;
+    font-size: 14px;
+}
+
+.user-role-badge {
+    background: #e4ebff;
+    color: #4a6cf7;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: #e6eaf5;
+    margin: 5px 0;
+}
+
+.user-dropdown-content a {
+    display: block;
+    padding: 10px 15px;
+    color: #444;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.user-dropdown-content a,
+.logout-btn {
+    display: block;
+    padding: 10px 15px;
+    color: #444;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 14px;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.user-dropdown-content a:hover {
+    background: #f0f4ff;
+    color: #4a6cf7;
+}
+
+.logout-btn {
+    color: #e74c3c !important;
+}
+
+.logout-btn:hover {
+    background: #fef0f0 !important;
+    color: #e74c3c !important;
+}
+
+/* HAMBURGER */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #2d3a8c;
+}
+
+/* NAVBAR */
+.main-nav {
+    background: #f7f9ff;
+    padding: 10px 25px;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid #e6eaf5;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.nav-right a,
+.dropdown span {
+    text-decoration: none;
+    color: #555;
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.nav-right a:hover,
+.dropdown span:hover {
+    background: #e4ebff;
+    color: #4a6cf7;
+}
+
+/* DROPDOWN NAVBAR */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 40px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    min-width: 180px;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 15px;
+    color: #444;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background: #f0f4ff;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-content.show {
+    display: block;
+}
+
+/* MAIN */
+main {
+    padding: 30px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .main-nav {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .main-nav.open {
+        display: flex;
+    }
+
+    .nav-right {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+    }
+
+    .nav-right a,
+    .dropdown span {
+        width: 100%;
+        padding: 10px 14px;
+    }
+
+    .dropdown-content {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        background: #f0f4ff;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: none;
+    }
+
+    .dropdown-content.show {
+        display: block;
+    }
+
+    .user-dropdown-content {
+        top: 45px;
+        right: -10px;
+    }
+
+    .clinic-name {
+        font-size: 14px;
+    }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #e74c3c;
+        transition: 0.3s;
+        font-family: "Segoe UI", sans-serif;
+        display: block;
+    }
+
+    .logout-btn:hover {
+        background: #fef0f0;
+        color: #e74c3c;
+    }
+
+    .logout-form {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+}

@@ -15,9 +15,6 @@ public class AuthController {
         if (error != null) {
             model.addAttribute("error", "Correo o contraseña incorrectos");
         }
-        if (logout != null) {
-            model.addAttribute("message", "Sesión cerrada exitosamente");
-        }
         return "auth/login";
     }
 }
