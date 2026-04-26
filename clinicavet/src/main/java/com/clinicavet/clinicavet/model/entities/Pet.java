@@ -30,6 +30,9 @@ public class Pet {
     @Column(name = "fecha_naci")
     private LocalDate birthDate;
 
+    @Column(name = "activo", nullable = false)
+    private boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "idraza", nullable = false)
     private Breed breed;

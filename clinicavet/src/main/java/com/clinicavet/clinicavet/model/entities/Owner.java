@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "duenios")
@@ -29,4 +32,11 @@ public class Owner {
 
     @Column(name = "correo")
     private String email;
+
+    @Column(name = "activo", nullable = false)
+    private boolean active = true;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Pet> pets = new ArrayList<>();
+
 }
