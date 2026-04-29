@@ -54,6 +54,10 @@
                 </li>
 
                 <li class="nav-item" sec:authorize="hasAnyRole('administrador', 'medico', 'auxiliar')">
+                    <a class="nav-link" th:href="@{/consultas}">Consultas</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasAnyRole('administrador', 'medico', 'auxiliar')">
                     <a class="nav-link" th:href="@{/citas}">Citas</a>
                 </li>
 
@@ -64,9 +68,6 @@
                     <ul class="dropdown-menu">
                         <li sec:authorize="hasRole('administrador')">
                             <a class="dropdown-item" th:href="@{/usuarios}">Usuarios</a>
-                        </li>
-                        <li sec:authorize="hasRole('administrador')">
-                            <a class="dropdown-item" th:href="@{/configuracion}">Configuración</a>
                         </li>
                         <li><a class="dropdown-item" th:href="@{/duenios}">Propietarios</a></li>
                         <li><a class="dropdown-item" th:href="@{/mascotas}">Mascotas</a></li>

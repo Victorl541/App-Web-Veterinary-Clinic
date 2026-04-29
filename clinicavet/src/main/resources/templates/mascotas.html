@@ -1,0 +1,692 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascotas</title>
+
+    <link rel="stylesheet" th:href="@{/css/styleprincipal.css}">
+    <link rel="stylesheet" th:href="@{/css/mascotas.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta name="csrf-token" th:content="${_csrf.token}"/>
+    <meta name="csrf-header" th:content="${_csrf.headerName}"/>
+</head>
+
+<body>
+
+<header th:replace="~{layout/fragments :: header}"></header>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main>
+    <div class="container-fluid mascotas-container">
+
+        <!-- TÍTULO -->
+        <div class="mb-4">
+            <h4 class="fw-bold mascotas-title">Gestión de mascotas</h4>
+            <p class="mascotas-subtitle">Administración de mascotas registradas en la clínica</p>
+        </div>
+
+        <!-- ACCIONES HEADER -->
+        <div class="acciones-header">
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn-inactivos" id="btnToggleInactivos" onclick="toggleInactivos()">
+                    🐾 Ver inactivos
+                </button>
+            </div>
+            <button class="btn-registrar" onclick="abrirModalCrear()">
+                ➕ Registrar mascota
+            </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros-bar">
+            <span class="filtro-label">Buscar:</span>
+            <div class="input-group filtro-input-wrap">
+                <span class="input-group-text">🔍</span>
+                <input type="text" class="form-control" id="buscarMascota"
+                       placeholder="Nombre, raza o dueño">
+            </div>
+        </div>
+
+        <!-- TABLA -->
+        <div class="mascotas-table-card">
+
+            <div class="table-top-bar">
+                <div class="mostrar-wrap">
+                    Mostrar
+                    <select class="form-select" id="selectMostrar" onchange="cambiarPorPagina()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    registros
+                </div>
+                <div class="table-info-text" id="textoInfo">Cargando...</div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mascotas-table">
+                    <thead>
+                    <tr>
+                        <th>Mascota</th>
+                        <th>Raza / Especie</th>
+                        <th>Género</th>
+                        <th>Edad</th>
+                        <th>Dueño</th>
+                        <th>Vacunas</th>
+                        <th>Alergias</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablamascotas">
+                    <tr th:each="p : ${pets}"
+                        th:data-nombre="${p.name}"
+                        th:data-raza="${p.breed.name}"
+                        th:data-duenio="${p.owner.name}"
+                        th:data-activo="${p.active}">
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="pet-avatar"
+                                     th:text="${#strings.toUpperCase(#strings.substring(p.name, 0, 2))}">MA</div>
+                                <div>
+                                    <div class="pet-name" th:text="${p.name}">Nombre</div>
+                                    <div class="pet-gender-small"
+                                         th:text="${p.gender.name() == 'macho' ? '♂ Macho' : '♀ Hembra'}">Género</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pet-breed" th:text="${p.breed.name}">Raza</div>
+                            <div class="pet-species-small" th:text="${p.breed.species.name}">Especie</div>
+                        </td>
+                        <td>
+                            <span class="badge-gender"
+                                  th:classappend="${p.gender.name() == 'macho'} ? 'macho' : 'hembra'"
+                                  th:text="${p.gender.name() == 'macho' ? '♂ Macho' : '♀ Hembra'}">
+                            </span>
+                        </td>
+                        <td th:text="${p.getAge() + ' año(s)'}">0 año(s)</td>
+                        <td>
+                            <div class="owner-ref" th:text="${p.owner.name}">Dueño</div>
+                        </td>
+                        <td>
+                            <div class="tags-cell">
+                                <span th:each="v : ${p.vaccines}" class="tag-vacuna" th:text="${v.name}">Vacuna</span>
+                                <span th:if="${#lists.isEmpty(p.vaccines)}" class="tag-none">—</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tags-cell">
+                                <span th:each="a : ${p.allergies}" class="tag-alergia" th:text="${a.name}">Alergia</span>
+                                <span th:if="${#lists.isEmpty(p.allergies)}" class="tag-none">—</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span th:if="${p.active}" class="badge-estado activo">Activo</span>
+                            <span th:unless="${p.active}" class="badge-estado inactivo">Inactivo</span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn-accion btn-editar" title="Editar"
+                                    th:data-id="${p.id}"
+                                    th:data-nombre="${p.name}"
+                                    th:data-genero="${p.gender.name()}"
+                                    th:data-fechanaci="${p.birthDate}"
+                                    th:data-idduenio="${p.owner.id}"
+                                    th:data-duenio="${p.owner.name}"
+                                    th:data-idraza="${p.breed.id}"
+                                    th:data-vacunas="${#strings.listJoin(p.vaccines.![id], ',')}"
+                                    th:data-alergias="${#strings.listJoin(p.allergies.![id], ',')}">
+                                ✏️
+                            </button>
+                            <button class="btn-accion danger btn-estado" title="Cambiar estado"
+                                    th:data-id="${p.id}"
+                                    th:data-activo="${p.active}">
+                                <span th:if="${p.active}">🔒</span>
+                                <span th:unless="${p.active}">🔓</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion-bar">
+                <div class="paginacion-info" id="paginacionInfo">-</div>
+                <div class="paginacion-btns" id="paginacionBtns"></div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- MODAL CREAR / EDITAR MASCOTA -->
+<div class="modal fade" id="modalMascota" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-mascota">
+            <div class="modal-header modal-mascota-header">
+                <div>
+                    <h5 class="modal-title" id="modalMascotaTitulo">Registrar mascota</h5>
+                    <p class="modal-subtitle" id="modalMascotaSubtitulo">Complete los datos de la mascota</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="mascotaId">
+
+                <div class="row g-3">
+
+                    <!-- Nombre -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Nombre</label>
+                        <input type="text" class="form-control mascota-form-control"
+                               id="mascotaNombre" placeholder="Nombre de la mascota" maxlength="15">
+                    </div>
+
+                    <!-- Género -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Género</label>
+                        <select class="form-select mascota-form-control" id="mascotaGenero">
+                            <option value="">Seleccione género</option>
+                            <option value="macho">♂ Macho</option>
+                            <option value="hembra">♀ Hembra</option>
+                        </select>
+                    </div>
+
+                    <!-- Fecha de nacimiento -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Fecha de nacimiento</label>
+                        <input type="date" class="form-control mascota-form-control"
+                               id="mascotaFechaNaci">
+                    </div>
+
+                    <!-- Raza -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Raza</label>
+                        <select class="form-select mascota-form-control" id="mascotaRaza">
+                            <option value="">Seleccione una raza</option>
+                            <option th:each="b : ${breeds}"
+                                    th:value="${b.id}"
+                                    th:text="${b.name + ' (' + b.species.name + ')'}">Raza</option>
+                        </select>
+                    </div>
+
+                    <!-- Dueño con búsqueda -->
+                    <div class="col-12">
+                        <label class="mascota-form-label">Dueño</label>
+                        <div class="owner-search-wrap">
+                            <input type="hidden" id="mascotaIdDuenio">
+                            <input type="text" class="form-control mascota-form-control"
+                                   id="mascotaBuscarDuenio"
+                                   placeholder="Buscar dueño por nombre..."
+                                   autocomplete="off"
+                                   oninput="filtrarDuenios(this.value)">
+                            <div class="owner-dropdown" id="ownerDropdown"></div>
+                        </div>
+                    </div>
+
+                    <!-- Vacunas -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Vacunas</label>
+                        <select class="form-select mascota-form-control" id="selectVacuna"
+                                onchange="agregarVacuna()">
+                            <option value="">Seleccionar vacuna...</option>
+                            <option th:each="v : ${vaccines}"
+                                    th:value="${v.id}"
+                                    th:text="${v.name}">Vacuna</option>
+                        </select>
+                        <div class="tags-container" id="tagsVacunas"></div>
+                        <div id="hiddenVacunas"></div>
+                    </div>
+
+                    <!-- Alergias -->
+                    <div class="col-12 col-md-6">
+                        <label class="mascota-form-label">Alergias</label>
+                        <select class="form-select mascota-form-control" id="selectAlergia"
+                                onchange="agregarAlergia()">
+                            <option value="">Seleccionar alergia...</option>
+                            <option th:each="a : ${allergies}"
+                                    th:value="${a.id}"
+                                    th:text="${a.name}">Alergia</option>
+                        </select>
+                        <div class="tags-container" id="tagsAlergias"></div>
+                        <div id="hiddenAlergias"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer px-4 pb-4">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarMascota"
+                        onclick="guardarMascota()">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" id="spinnerMascota"></span>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+<div th:replace="~{layout/fragments :: scripts}"></div>
+
+<!-- Datos para JS -->
+<script th:inline="javascript">
+    const todosLosDuenios = /*[[${owners}]]*/ [];
+</script>
+
+<script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
+    /* ====================================
+       ESTADO TAGS (vacunas / alergias)
+    ==================================== */
+    let vacunasSeleccionadas   = {}; // { id: nombre }
+    let alergiasSeleccionadas  = {};
+
+    /* ====================================
+       PAGINACIÓN Y FILTROS
+    ==================================== */
+    let paginaActual    = 1;
+    let porPagina       = 10;
+    let mostrarInactivos = false;
+    let filasTodas      = [];
+
+    function inicializar() {
+        filasTodas = Array.from(document.querySelectorAll('#tablamascotas tr'));
+        document.getElementById('buscarMascota').addEventListener('input', () => {
+            paginaActual = 1;
+            renderTabla();
+        });
+        renderTabla();
+
+        document.getElementById('tablamascotas').addEventListener('click', function(e) {
+            const btnEditar = e.target.closest('.btn-editar');
+            const btnEstado = e.target.closest('.btn-estado');
+
+            if (btnEditar) {
+                const d = btnEditar.dataset;
+                abrirModalEditar(
+                    d.id, d.nombre, d.genero, d.fechanaci,
+                    d.idduenio, d.duenio, d.idraza,
+                    d.vacunas, d.alergias
+                );
+            }
+            if (btnEstado) {
+                cambiarEstado(btnEstado.dataset.id, btnEstado.dataset.activo === 'true');
+            }
+        });
+
+        // Cerrar dropdown dueño al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.owner-search-wrap')) {
+                document.getElementById('ownerDropdown').innerHTML = '';
+            }
+        });
+    }
+
+    function toggleInactivos() {
+        mostrarInactivos = !mostrarInactivos;
+        const btn = document.getElementById('btnToggleInactivos');
+        btn.classList.toggle('activo', mostrarInactivos);
+        btn.textContent = mostrarInactivos ? '✅ Ver activos' : '🐾 Ver inactivos';
+        paginaActual = 1;
+        renderTabla();
+    }
+
+    function cambiarPorPagina() {
+        porPagina = parseInt(document.getElementById('selectMostrar').value);
+        paginaActual = 1;
+        renderTabla();
+    }
+
+    function renderTabla() {
+        const textoBuscar = document.getElementById('buscarMascota').value.toLowerCase();
+
+        const filasFiltradas = filasTodas.filter(fila => {
+            const nombre = (fila.dataset.nombre || '').toLowerCase();
+            const raza   = (fila.dataset.raza   || '').toLowerCase();
+            const duenio = (fila.dataset.duenio  || '').toLowerCase();
+            const activo = fila.dataset.activo === 'true';
+
+            const matchBuscar = nombre.includes(textoBuscar) ||
+                raza.includes(textoBuscar)   ||
+                duenio.includes(textoBuscar);
+            const matchEstado = mostrarInactivos ? !activo : activo;
+            return matchBuscar && matchEstado;
+        });
+
+        const total        = filasFiltradas.length;
+        const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        const inicio = (paginaActual - 1) * porPagina;
+        const fin    = Math.min(inicio + porPagina, total);
+
+        filasTodas.forEach(f => f.style.display = 'none');
+        filasFiltradas.slice(inicio, fin).forEach(f => f.style.display = '');
+
+        document.getElementById('textoInfo').textContent =
+            total === 0 ? 'Sin resultados' : `Mostrando ${inicio + 1} al ${fin} de ${total} registros`;
+        document.getElementById('paginacionInfo').textContent =
+            total === 0 ? '' : `Mostrando registros del ${inicio + 1} al ${fin} de un total de ${total} registros.`;
+
+        renderPaginacion(totalPaginas);
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const cont = document.getElementById('paginacionBtns');
+        cont.innerHTML = '';
+
+        const btnAnterior = document.createElement('button');
+        btnAnterior.className = 'btn-pag';
+        btnAnterior.textContent = 'Anterior';
+        btnAnterior.disabled = paginaActual === 1;
+        btnAnterior.onclick = () => { paginaActual--; renderTabla(); };
+        cont.appendChild(btnAnterior);
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'btn-pag' + (i === paginaActual ? ' activo' : '');
+            btn.textContent = i;
+            btn.onclick = (function(p) { return () => { paginaActual = p; renderTabla(); }; })(i);
+            cont.appendChild(btn);
+        }
+
+        const btnSiguiente = document.createElement('button');
+        btnSiguiente.className = 'btn-pag';
+        btnSiguiente.textContent = 'Siguiente';
+        btnSiguiente.disabled = paginaActual === totalPaginas;
+        btnSiguiente.onclick = () => { paginaActual++; renderTabla(); };
+        cont.appendChild(btnSiguiente);
+    }
+
+    /* ====================================
+       BÚSQUEDA DE DUEÑO
+    ==================================== */
+    function filtrarDuenios(valor) {
+        const dropdown = document.getElementById('ownerDropdown');
+        document.getElementById('mascotaIdDuenio').value = '';
+        dropdown.innerHTML = '';
+
+        if (!valor.trim()) return;
+
+        const coincidencias = todosLosDuenios.filter(o =>
+            o.name.toLowerCase().includes(valor.toLowerCase()) && o.active
+        ).slice(0, 8);
+
+        if (coincidencias.length === 0) {
+            dropdown.innerHTML = '<div class="owner-option no-result">Sin resultados</div>';
+            return;
+        }
+
+        coincidencias.forEach(o => {
+            const item = document.createElement('div');
+            item.className = 'owner-option';
+            item.innerHTML = `<strong>${o.name}</strong><span>${o.cedula || ''}</span>`;
+            item.onclick = () => {
+                document.getElementById('mascotaIdDuenio').value  = o.id;
+                document.getElementById('mascotaBuscarDuenio').value = o.name;
+                dropdown.innerHTML = '';
+            };
+            dropdown.appendChild(item);
+        });
+    }
+
+    /* ====================================
+       TAGS VACUNAS
+    ==================================== */
+    function agregarVacuna() {
+        const sel = document.getElementById('selectVacuna');
+        const id  = sel.value;
+        const nombre = sel.options[sel.selectedIndex].text;
+        if (!id || vacunasSeleccionadas[id]) { sel.value = ''; return; }
+
+        vacunasSeleccionadas[id] = nombre;
+        sel.value = '';
+        renderTagsVacunas();
+    }
+
+    function quitarVacuna(id) {
+        delete vacunasSeleccionadas[id];
+        renderTagsVacunas();
+    }
+
+    function renderTagsVacunas() {
+        const cont   = document.getElementById('tagsVacunas');
+        const hidden = document.getElementById('hiddenVacunas');
+        cont.innerHTML   = '';
+        hidden.innerHTML = '';
+
+        Object.entries(vacunasSeleccionadas).forEach(([id, nombre]) => {
+            const tag = document.createElement('span');
+            tag.className = 'tag tag-vacuna';
+            tag.innerHTML = `${nombre} <button type="button" onclick="quitarVacuna('${id}')">×</button>`;
+            cont.appendChild(tag);
+
+            const inp = document.createElement('input');
+            inp.type  = 'hidden';
+            inp.name  = 'vacunaIds';
+            inp.value = id;
+            hidden.appendChild(inp);
+        });
+    }
+
+    /* ====================================
+       TAGS ALERGIAS
+    ==================================== */
+    function agregarAlergia() {
+        const sel  = document.getElementById('selectAlergia');
+        const id   = sel.value;
+        const nombre = sel.options[sel.selectedIndex].text;
+        if (!id || alergiasSeleccionadas[id]) { sel.value = ''; return; }
+
+        alergiasSeleccionadas[id] = nombre;
+        sel.value = '';
+        renderTagsAlergias();
+    }
+
+    function quitarAlergia(id) {
+        delete alergiasSeleccionadas[id];
+        renderTagsAlergias();
+    }
+
+    function renderTagsAlergias() {
+        const cont   = document.getElementById('tagsAlergias');
+        const hidden = document.getElementById('hiddenAlergias');
+        cont.innerHTML   = '';
+        hidden.innerHTML = '';
+
+        Object.entries(alergiasSeleccionadas).forEach(([id, nombre]) => {
+            const tag = document.createElement('span');
+            tag.className = 'tag tag-alergia';
+            tag.innerHTML = `${nombre} <button type="button" onclick="quitarAlergia('${id}')">×</button>`;
+            cont.appendChild(tag);
+
+            const inp = document.createElement('input');
+            inp.type  = 'hidden';
+            inp.name  = 'alergiaIds';
+            inp.value = id;
+            hidden.appendChild(inp);
+        });
+    }
+
+    /* ====================================
+       LIMPIAR MODAL
+    ==================================== */
+    function limpiarModal() {
+        document.getElementById('mascotaId').value          = '';
+        document.getElementById('mascotaNombre').value      = '';
+        document.getElementById('mascotaGenero').value      = '';
+        document.getElementById('mascotaFechaNaci').value   = '';
+        document.getElementById('mascotaRaza').value        = '';
+        document.getElementById('mascotaBuscarDuenio').value = '';
+        document.getElementById('mascotaIdDuenio').value    = '';
+        vacunasSeleccionadas  = {};
+        alergiasSeleccionadas = {};
+        renderTagsVacunas();
+        renderTagsAlergias();
+        document.getElementById('ownerDropdown').innerHTML = '';
+    }
+
+    /* ====================================
+       MODAL CREAR
+    ==================================== */
+    function abrirModalCrear() {
+        limpiarModal();
+        document.getElementById('modalMascotaTitulo').textContent    = 'Registrar mascota';
+        document.getElementById('modalMascotaSubtitulo').textContent = 'Complete los datos de la nueva mascota';
+        new bootstrap.Modal(document.getElementById('modalMascota')).show();
+    }
+
+    /* ====================================
+       MODAL EDITAR
+    ==================================== */
+    function abrirModalEditar(id, nombre, genero, fechaNaci, idDuenio, duenio, idRaza, vacunas, alergias) {
+        limpiarModal();
+
+        document.getElementById('mascotaId').value           = id;
+        document.getElementById('mascotaNombre').value       = nombre;
+        document.getElementById('mascotaGenero').value       = genero;
+        document.getElementById('mascotaFechaNaci').value    = fechaNaci || '';
+        document.getElementById('mascotaRaza').value         = idRaza;
+        document.getElementById('mascotaBuscarDuenio').value = duenio;
+        document.getElementById('mascotaIdDuenio').value     = idDuenio;
+
+        // Cargar vacunas preseleccionadas
+        if (vacunas) {
+            vacunas.split(',').filter(Boolean).forEach(vid => {
+                const opt = document.querySelector(`#selectVacuna option[value="${vid}"]`);
+                if (opt) vacunasSeleccionadas[vid] = opt.text;
+            });
+            renderTagsVacunas();
+        }
+
+        // Cargar alergias preseleccionadas
+        if (alergias) {
+            alergias.split(',').filter(Boolean).forEach(aid => {
+                const opt = document.querySelector(`#selectAlergia option[value="${aid}"]`);
+                if (opt) alergiasSeleccionadas[aid] = opt.text;
+            });
+            renderTagsAlergias();
+        }
+
+        document.getElementById('modalMascotaTitulo').textContent    = 'Editar mascota';
+        document.getElementById('modalMascotaSubtitulo').textContent = 'Modifica los datos de la mascota';
+        new bootstrap.Modal(document.getElementById('modalMascota')).show();
+    }
+
+    /* ====================================
+       GUARDAR (CREAR O EDITAR)
+    ==================================== */
+    function guardarMascota() {
+        const id        = document.getElementById('mascotaId').value;
+        const nombre    = document.getElementById('mascotaNombre').value.trim();
+        const genero    = document.getElementById('mascotaGenero').value;
+        const fechaNaci = document.getElementById('mascotaFechaNaci').value;
+        const idRaza    = document.getElementById('mascotaRaza').value;
+        const idDuenio  = document.getElementById('mascotaIdDuenio').value;
+        const esNuevo   = !id;
+
+        if (!nombre)   { mostrarAlerta('Ingresa el nombre de la mascota', 'warning'); return; }
+        if (!genero)   { mostrarAlerta('Selecciona el género', 'warning'); return; }
+        if (!idRaza)   { mostrarAlerta('Selecciona la raza', 'warning'); return; }
+        if (!idDuenio) { mostrarAlerta('Selecciona el dueño', 'warning'); return; }
+
+        const btn     = document.getElementById('btnGuardarMascota');
+        const spinner = document.getElementById('spinnerMascota');
+        btn.disabled  = true;
+        spinner.classList.remove('d-none');
+
+        const params = new URLSearchParams();
+        if (!esNuevo) params.append('id', id);
+        params.append('nombre',    nombre);
+        params.append('genero',    genero);
+        params.append('fechaNaci', fechaNaci);
+        params.append('idRaza',    idRaza);
+        params.append('idDuenio',  idDuenio);
+
+        Object.keys(vacunasSeleccionadas).forEach(vid  => params.append('vacunaIds',  vid));
+        Object.keys(alergiasSeleccionadas).forEach(aid => params.append('alergiaIds', aid));
+
+        const url = esNuevo ? '/mascotas/crear' : '/mascotas/editar';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken
+            },
+            body: params.toString()
+        })
+            .then(res => res.json())
+            .then(data => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalMascota')).hide();
+                    mostrarAlerta(data.message || 'Mascota guardada exitosamente', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarAlerta(data.message || 'Error al guardar la mascota', 'danger');
+                }
+            })
+            .catch(() => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+                mostrarAlerta('Error al procesar la solicitud', 'danger');
+            });
+    }
+
+    /* ====================================
+       CAMBIAR ESTADO
+    ==================================== */
+    function cambiarEstado(id, estadoActual) {
+        const accion = estadoActual ? 'desactivar' : 'activar';
+        if (!confirm(`¿Estás seguro de que deseas ${accion} esta mascota?`)) return;
+
+        fetch(`/mascotas/estado/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarAlerta(data.message || 'Estado actualizado', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarAlerta(data.message || 'Error al cambiar el estado', 'danger');
+                }
+            })
+            .catch(() => mostrarAlerta('Error al procesar la solicitud', 'danger'));
+    }
+
+    /* ====================================
+       ALERTA
+    ==================================== */
+    function mostrarAlerta(mensaje, tipo = 'info') {
+        const alerta = document.createElement('div');
+        alerta.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+        alerta.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alerta.innerHTML = `${mensaje}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        document.body.appendChild(alerta);
+        setTimeout(() => alerta.remove(), 4000);
+    }
+
+    /* ====================================
+       INIT
+    ==================================== */
+    document.addEventListener('DOMContentLoaded', inicializar);
+</script>
+
+</body>
+</html>
+

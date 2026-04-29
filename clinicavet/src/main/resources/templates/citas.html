@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citas</title>
+
+    <link rel="stylesheet" th:href="@{/css/styleprincipal.css}">
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <!-- Token CSRF para JavaScript -->
+    <meta name="csrf-token" th:content="${_csrf.token}" />
+    <meta name="csrf-header" th:content="${_csrf.headerName}" />
+</head>
+
+<body>
+
+<header th:replace="~{layout/fragments :: header}"></header>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main>
+    <div class="container-fluid citas-container">
+
+        <!-- TÍTULO -->
+        <div class="mb-4">
+            <h4 class="fw-bold citas-title">Agenda de citas</h4>
+            <p class="citas-subtitle">Gestión y programación de consultas veterinarias</p>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- FORMULARIO AGENDAR CITA -->
+            <div class="col-12 col-lg-4">
+                <div class="form-card">
+                    <h5 class="form-card-title">Agendar cita</h5>
+
+                    <!-- CAMPO BUSCAR PROPIETARIO -->
+                    <div class="mb-3" style="position: relative;">
+                        <label class="form-label">Propietario</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">👤</span>
+                            <input type="text"
+                                   id="buscarPropietario"
+                                   class="form-control"
+                                   placeholder="Buscar por nombre o cédula"
+                                   autocomplete="off">
+                        </div>
+                        <div id="dropdownPropietarios" class="dropdown-results"></div>
+                    </div>
+
+                    <!-- SELECT PROPIETARIO -->
+                    <div class="mb-3" id="ownerSelectDiv" style="display: none;">
+                        <label class="form-label">Propietario seleccionado</label>
+                        <div class="alert alert-light d-flex align-items-center gap-2 mb-0">
+                            <span>👤</span>
+                            <div>
+                                <div class="fw-600 text-dark" id="ownerNameDisplay"></div>
+                                <small class="text-muted" id="ownerCedulaDisplay"></small>
+                            </div>
+                            <button type="button" class="btn-close ms-auto"
+                                    onclick="limpiarPropietario()" style="width: 20px; height: 20px;"></button>
+                        </div>
+                        <input type="hidden" id="ownerId">
+                    </div>
+
+                    <!-- SELECT MASCOTA -->
+                    <div class="mb-3" id="mascotaDiv" style="display: none;">
+                        <label class="form-label">Mascota</label>
+                        <select id="mascotaSelect" class="form-select">
+                            <option value="">Seleccione mascota</option>
+                        </select>
+                    </div>
+
+                    <!-- SELECT MÉDICO -->
+                    <div class="mb-3">
+                        <label class="form-label">Médico</label>
+                        <select id="medicoSelect" class="form-select">
+                            <option value="">Seleccione médico</option>
+                            <option th:each="m : ${medicos}"
+                                    th:value="${m.id}"
+                                    th:text="${m.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- CAMPO FECHA -->
+                    <div class="mb-3">
+                        <label class="form-label">Fecha</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">📅</span>
+                            <input type="date"
+                                   id="fechaInput"
+                                   class="form-control"
+                                   min="">
+                        </div>
+                    </div>
+
+                    <!-- CAMPO HORA -->
+                    <div class="mb-3">
+                        <label class="form-label">Hora</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">🕐</span>
+                            <input type="time"
+                                   id="horaInput"
+                                   class="form-control"
+                                   min="06:00"
+                                   max="20:00">
+                        </div>
+                    </div>
+
+                    <!-- ESTADO (INFORMACIÓN) -->
+                    <div class="mb-3">
+                        <label class="form-label">Estado</label>
+                        <div class="alert alert-info mb-0">
+                            <small><strong>Estado inicial:</strong> Pendiente</small>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN ENVIAR -->
+                    <button id="btnAgendar" class="btn btn-primary w-100" type="button">
+                        <span class="spinner-border spinner-border-sm me-2 d-none"
+                              id="spinnerAgendar" role="status" aria-hidden="true"></span>
+                        Agendar cita
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- CALENDARIO -->
+            <div class="col-12 col-lg-8">
+                <div class="calendar-card">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<!-- MODAL DETALLE CITA -->
+<div class="modal fade" id="modalDetalleCita" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-cita">
+            <div class="modal-header modal-cita-header">
+                <h5 class="modal-title">Detalles de la cita</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalCitaBody">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarCita" class="btn btn-danger" style="display: none;">
+                    Cancelar cita
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+<div th:replace="~{layout/fragments :: scripts}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/es.global.min.js"></script>
+
+<script>
+    /* ====================================
+       INICIALIZACIÓN Y VARIABLES GLOBALES
+    ==================================== */
+    let propietarioSeleccionado = null;
+    let mascotasDisponibles = [];
+    let calendar = null;
+
+    // Obtener token CSRF
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
+    // Establecer fecha mínima (hoy)
+    document.addEventListener('DOMContentLoaded', function () {
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaInput').min = hoy;
+    });
+
+    /* ====================================
+       BÚSQUEDA Y SELECCIÓN DE PROPIETARIOS
+    ==================================== */
+    const inputBusca = document.getElementById("buscarPropietario");
+    const dropdownProp = document.getElementById("dropdownPropietarios");
+
+    inputBusca.addEventListener('input', function () {
+        const valor = this.value.trim();
+
+        if (valor.length < 2) {
+            dropdownProp.innerHTML = '';
+            return;
+        }
+
+        fetch(`/citas/propietarios?search=${encodeURIComponent(valor)}`)
+            .then(res => res.json())
+            .then(data => {
+                dropdownProp.innerHTML = '';
+
+                if (data.length === 0) {
+                    dropdownProp.innerHTML = `
+                        <div class="dropdown-item-custom text-muted text-center py-2">
+                            No se encontraron resultados
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach(owner => {
+                    const div = document.createElement('div');
+                    div.classList.add('dropdown-item-custom');
+                    div.innerHTML = `
+                        <div class="d-flex align-items-center gap-2 w-100">
+                            <div class="owner-avatar-small">👤</div>
+                            <div class="flex-grow-1">
+                                <strong>${owner.nombre}</strong><br>
+                                <small class="text-muted">${owner.cedula}</small>
+                            </div>
+                        </div>
+                    `;
+
+                    div.onclick = () => seleccionarPropietario(owner);
+                    dropdownProp.appendChild(div);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                dropdownProp.innerHTML = `
+                    <div class="dropdown-item-custom text-danger text-center py-2">
+                        Error al buscar propietarios
+                    </div>
+                `;
+            });
+    });
+
+    function seleccionarPropietario(owner) {
+        propietarioSeleccionado = owner;
+        document.getElementById('ownerId').value = owner.id;
+        document.getElementById('ownerNameDisplay').textContent = owner.nombre;
+        document.getElementById('ownerCedulaDisplay').textContent = owner.cedula;
+        document.getElementById('ownerSelectDiv').style.display = 'block';
+        document.getElementById('mascotaDiv').style.display = 'block';
+        document.getElementById('buscarPropietario').value = owner.nombre;
+        dropdownProp.innerHTML = '';
+
+        cargarMascotas(owner.id);
+    }
+
+    function limpiarPropietario() {
+        propietarioSeleccionado = null;
+        document.getElementById('ownerId').value = '';
+        document.getElementById('buscarPropietario').value = '';
+        document.getElementById('ownerSelectDiv').style.display = 'none';
+        document.getElementById('mascotaDiv').style.display = 'none';
+        document.getElementById('mascotaSelect').innerHTML = '<option value="">Seleccione mascota</option>';
+        mascotasDisponibles = [];
+        dropdownProp.innerHTML = '';
+    }
+
+    /* ====================================
+       CARGAR MASCOTAS DE UN PROPIETARIO
+    ==================================== */
+    function cargarMascotas(ownerId) {
+        fetch(`/citas/mascotas/${ownerId}`)
+            .then(res => res.json())
+            .then(data => {
+                mascotasDisponibles = data;
+                const select = document.getElementById("mascotaSelect");
+                select.innerHTML = '<option value="">Seleccione mascota</option>';
+
+                data.forEach(pet => {
+                    const option = document.createElement("option");
+                    option.value = pet.id;
+                    option.textContent = `${pet.nombre} (${pet.especie})`;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar mascotas:', error);
+                alert('Error al cargar las mascotas');
+            });
+    }
+
+    /* ====================================
+       AGREGAR CITA
+    ==================================== */
+    document.getElementById('btnAgendar').addEventListener('click', function () {
+        // Validaciones
+        if (!document.getElementById('ownerId').value) {
+            alert('Por favor selecciona un propietario');
+            return;
+        }
+
+        const mascotaId = document.getElementById('mascotaSelect').value;
+        if (!mascotaId) {
+            alert('Por favor selecciona una mascota');
+            return;
+        }
+
+        const medicoId = document.getElementById('medicoSelect').value;
+        if (!medicoId) {
+            alert('Por favor selecciona un médico');
+            return;
+        }
+
+        const fecha = document.getElementById('fechaInput').value;
+        if (!fecha) {
+            alert('Por favor selecciona una fecha');
+            return;
+        }
+
+        const hora = document.getElementById('horaInput').value;
+        if (!hora) {
+            alert('Por favor selecciona una hora');
+            return;
+        }
+
+        // Mostrar spinner
+        const btn = this;
+        const spinner = document.getElementById('spinnerAgendar');
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        // Enviar datos
+         fetch('/citas/crear', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 [csrfHeader]: csrfToken
+             },
+             body: new URLSearchParams({
+                 petId: mascotaId,
+                 medicoId: medicoId,
+                 fecha: fecha,
+                 hora: hora
+             })
+         })
+            .then(res => res.json())
+            .then(data => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+
+                if (data.success) {
+                    // Limpiar formulario
+                    limpiarPropietario();
+                    document.getElementById('mascotaSelect').value = '';
+                    document.getElementById('medicoSelect').value = '';
+                    document.getElementById('fechaInput').value = '';
+                    document.getElementById('horaInput').value = '';
+
+                    // Mostrar éxito
+                    mostrarAlerta('Cita agendada exitosamente', 'success');
+
+                    // Recargar calendario
+                    if (calendar) {
+                        calendar.refetchEvents();
+                    }
+                } else {
+                    mostrarAlerta(data.message || 'Error al agendar la cita', 'danger');
+                }
+            })
+            .catch(error => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+                console.error('Error:', error);
+                mostrarAlerta('Error al procesar la solicitud', 'danger');
+            });
+    });
+
+    /* ====================================
+       CALENDARIO CON FULLCALENDAR
+    ==================================== */
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+
+        // Obtener fecha actual para validaciones
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const fechaHoyStr = hoy.toISOString().split('T')[0];
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            locale: 'es',
+            height: 'auto',
+            contentHeight: 'auto',
+            allDaySlot: false,
+            slotMinTime: "06:00:00",
+            slotMaxTime: "20:00:00",
+            slotDuration: "00:30:00",
+            slotLabelInterval: "00:30:00",
+            validRange: {
+                start: fechaHoyStr  // Solo permitir fechas desde hoy en adelante
+            },
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día'
+            },
+            events: function (info, successCallback, failureCallback) {
+                fetch('/citas/calendario')
+                    .then(res => res.json())
+                    .then(data => {
+                        // Filtrar solo las citas pendientes
+                        const citasPendientes = data.filter(event =>
+                            event.extendedProps.status === 'pendiente'
+                        );
+                        successCallback(citasPendientes);
+                    })
+                    .catch(error => {
+                        console.error('Error cargando eventos:', error);
+                        failureCallback(error);
+                    });
+            },
+            eventClick: function (info) {
+                mostrarDetalleCita(info.event);
+            },
+            dateClick: function (info) {
+                // Validar que no sea una fecha anterior a hoy
+                const fechaClickeada = new Date(info.dateStr);
+                const hoyComparacion = new Date();
+                hoyComparacion.setHours(0, 0, 0, 0);
+
+                if (fechaClickeada < hoyComparacion) {
+                    mostrarAlerta('No puedes agendar citas en días anteriores', 'warning');
+                    return;
+                }
+
+                // Auto-llenar fecha y hora al hacer click en el calendario
+                const fecha = info.dateStr.split('T')[0];
+                const hora = info.dateStr.split('T')[1]?.substring(0, 5) || '';
+
+                document.getElementById('fechaInput').value = fecha;
+                if (hora) {
+                    document.getElementById('horaInput').value = hora;
+                }
+            }
+        });
+
+        calendar.render();
+    });
+
+    /* ====================================
+       FUNCIÓN PARA MOSTRAR DETALLES DE CITA
+    ==================================== */
+    let citaIdActual = null; // Variable para guardar el ID de la cita actual
+
+    function mostrarDetalleCita(event) {
+        const props = event.extendedProps;
+        const fecha = new Date(event.startStr).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const estadoBadge = {
+            'pendiente': '<span class="badge bg-warning text-dark">Pendiente</span>',
+            'en_curso': '<span class="badge bg-info">En curso</span>',
+            'completada': '<span class="badge bg-success">Completada</span>',
+            'cancelada': '<span class="badge bg-danger">Cancelada</span>'
+        };
+
+        const html = `
+            <div class="detalles-cita">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="detalle-item">
+                            <span class="detalle-label">🐾 Mascota:</span>
+                            <span class="detalle-valor">${props.petName}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detalle-item">
+                            <span class="detalle-label">👤 Dueño:</span>
+                            <span class="detalle-valor">${props.ownerName}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detalle-item">
+                            <span class="detalle-label">👨‍⚕️ Médico:</span>
+                            <span class="detalle-valor">${props.doctorName}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detalle-item">
+                            <span class="detalle-label">📅 Fecha y hora:</span>
+                            <span class="detalle-valor">${fecha}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detalle-item">
+                            <span class="detalle-label">Estado:</span>
+                            <span>${estadoBadge[props.status]}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalCitaBody').innerHTML = html;
+
+        // Guardar el ID de la cita y mostrar/ocultar botón de cancelar
+        citaIdActual = event.id;
+        const btnCancelar = document.getElementById('btnCancelarCita');
+
+        // Solo mostrar botón de cancelar si la cita está pendiente
+        if (props.status === 'pendiente') {
+            btnCancelar.style.display = 'block';
+            // Limpiar listeners anteriores
+            btnCancelar.onclick = null;
+            btnCancelar.addEventListener('click', cancelarCitaActual);
+        } else {
+            btnCancelar.style.display = 'none';
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('modalDetalleCita'));
+        modal.show();
+    }
+
+    /* ====================================
+       FUNCIÓN PARA CANCELAR CITA
+    ==================================== */
+    function cancelarCitaActual() {
+        if (!citaIdActual) {
+            mostrarAlerta('Error: no se pudo identificar la cita', 'danger');
+            return;
+        }
+
+        if (!confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+            return;
+        }
+
+        const btn = document.getElementById('btnCancelarCita');
+        btn.disabled = true;
+        const textoOriginal = btn.textContent;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cancelando...';
+
+        fetch(`/citas/cancelar/${citaIdActual}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
+
+                if (data.success) {
+                    mostrarAlerta('Cita cancelada exitosamente', 'success');
+
+                    // Cerrar modal y recargar calendario
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalDetalleCita'));
+                    modal.hide();
+
+                    if (calendar) {
+                        calendar.refetchEvents();
+                    }
+                } else {
+                    mostrarAlerta(data.message || 'Error al cancelar la cita', 'danger');
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
+                console.error('Error:', error);
+                mostrarAlerta('Error al procesar la solicitud', 'danger');
+            });
+    }
+
+    /* ====================================
+       FUNCIÓN DE ALERTA
+    ==================================== */
+    function mostrarAlerta(mensaje, tipo = 'info') {
+        const alerta = document.createElement('div');
+        alerta.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+        alerta.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alerta.innerHTML = `
+            ${mensaje}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alerta);
+
+        setTimeout(() => {
+            alerta.remove();
+        }, 4000);
+    }
+
+    /* ====================================
+       CERRAR DROPDOWN AL HACER CLICK FUERA
+    ==================================== */
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('#buscarPropietario') && !e.target.closest('#dropdownPropietarios')) {
+            document.getElementById('dropdownPropietarios').innerHTML = '';
+        }
+    });
+</script>
+
+</body>
+</html>

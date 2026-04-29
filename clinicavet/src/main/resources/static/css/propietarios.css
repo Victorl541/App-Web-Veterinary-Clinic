@@ -1,0 +1,432 @@
+/* ==================== PROPIETARIOS ==================== */
+.propietarios-container {
+    padding-top: 25px;
+}
+
+.propietarios-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.propietarios-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* ==================== HEADER ACCIONES ==================== */
+.acciones-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-registrar {
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    border: none;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn-registrar:hover {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 108, 247, 0.3);
+    color: white;
+}
+
+.btn-inactivos {
+    background: white;
+    border: 1.5px solid #e0e4f0;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-inactivos:hover {
+    border-color: #4a6cf7;
+    color: #4a6cf7;
+    background: #f0f4ff;
+}
+
+.btn-inactivos.activo {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+/* ==================== FILTROS ==================== */
+.filtros-bar {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filtro-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.filtro-input-wrap {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filtro-input-wrap .input-group-text {
+    background: white;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    border-color: #e0e4f0;
+    font-size: 15px;
+}
+
+.filtro-input-wrap .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    border-color: #e0e4f0;
+    font-size: 14px;
+}
+
+.filtro-input-wrap .form-control:focus {
+    box-shadow: none;
+    border-color: #4a6cf7;
+}
+
+/* ==================== TABLA ==================== */
+.propietarios-table-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.table-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1px solid #f0f2f8;
+}
+
+.table-info-text {
+    font-size: 13px;
+    color: #888;
+}
+
+.mostrar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.mostrar-wrap .form-select {
+    width: auto;
+    border-radius: 8px;
+    border-color: #e0e4f0;
+    font-size: 13px;
+    padding: 4px 28px 4px 10px;
+}
+
+.propietarios-table {
+    margin-bottom: 0;
+}
+
+.propietarios-table thead tr {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+}
+
+.propietarios-table thead th {
+    font-size: 13px;
+    font-weight: 600;
+    color: white !important;
+    padding: 14px 16px;
+    border: none !important;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.propietarios-table tbody tr {
+    transition: background 0.2s;
+}
+
+.propietarios-table tbody tr:hover {
+    background: #f5f7ff;
+}
+
+.propietarios-table tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #444;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+}
+
+.propietarios-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==================== AVATAR ==================== */
+.owner-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.owner-name {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 14px;
+}
+
+.owner-cedula-small {
+    font-size: 12px;
+    color: #999;
+}
+
+/* ==================== BADGE ESTADO ==================== */
+.badge-estado {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-estado.activo {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-estado.inactivo {
+    background: #fdecea;
+    color: #c62828;
+}
+
+.badge-estado::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    display: inline-block;
+}
+
+/* ==================== ACCIONES FILA ==================== */
+.btn-accion {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 16px;
+    color: #888;
+}
+
+.btn-accion:hover {
+    background: #eef3ff;
+    color: #4a6cf7;
+}
+
+.btn-accion.danger:hover {
+    background: #fdecea;
+    color: #c62828;
+}
+
+/* ==================== PAGINACIÓN ==================== */
+.paginacion-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #f0f2f8;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.paginacion-info {
+    font-size: 13px;
+    color: #888;
+}
+
+.paginacion-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-pag {
+    background: white;
+    border: 1.5px solid #e0e4f0;
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-pag:hover:not(:disabled) {
+    border-color: #4a6cf7;
+    color: #4a6cf7;
+    background: #f0f4ff;
+}
+
+.btn-pag.activo {
+    background: #4a6cf7;
+    border-color: #4a6cf7;
+    color: white;
+}
+
+.btn-pag:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ==================== MODAL ==================== */
+.modal-propietario {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-propietario-header {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    color: white;
+    padding: 20px 24px;
+    border: none;
+}
+
+.modal-propietario-header .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.modal-propietario-header .modal-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+
+.propietario-form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3a8c;
+    margin-bottom: 6px;
+}
+
+.propietario-form-control {
+    border-radius: 10px;
+    border-color: #e0e4f0;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.propietario-form-control:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+}
+
+/* ==================== MASCOTAS BADGE ==================== */
+.mascotas-count {
+    background: #eef3ff;
+    color: #4a6cf7;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .propietarios-container {
+        padding-top: 15px;
+    }
+
+    .propietarios-title {
+        font-size: 20px;
+    }
+
+    .acciones-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filtros-bar {
+        padding: 12px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-input-wrap {
+        min-width: unset;
+    }
+
+    .table-top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .propietarios-table thead th,
+    .propietarios-table tbody td {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .owner-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
+    }
+
+    .paginacion-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+

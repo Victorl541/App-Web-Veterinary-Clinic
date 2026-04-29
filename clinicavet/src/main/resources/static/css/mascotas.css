@@ -1,0 +1,599 @@
+/* ==================== MASCOTAS ==================== */
+.mascotas-container {
+    padding-top: 25px;
+}
+
+.mascotas-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.mascotas-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* ==================== HEADER ACCIONES ==================== */
+.acciones-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-registrar {
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    border: none;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn-registrar:hover {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 108, 247, 0.3);
+    color: white;
+}
+
+.btn-inactivos {
+    background: white;
+    border: 1.5px solid #e0e4f0;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-inactivos:hover {
+    border-color: #4a6cf7;
+    color: #4a6cf7;
+    background: #f0f4ff;
+}
+
+.btn-inactivos.activo {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+/* ==================== FILTROS ==================== */
+.filtros-bar {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filtro-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.filtro-input-wrap {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filtro-input-wrap .input-group-text {
+    background: white;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    border-color: #e0e4f0;
+    font-size: 15px;
+}
+
+.filtro-input-wrap .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    border-color: #e0e4f0;
+    font-size: 14px;
+}
+
+.filtro-input-wrap .form-control:focus {
+    box-shadow: none;
+    border-color: #4a6cf7;
+}
+
+/* ==================== TABLA ==================== */
+.mascotas-table-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+.table-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1px solid #f0f2f8;
+}
+
+.table-info-text {
+    font-size: 13px;
+    color: #888;
+}
+
+.mostrar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #555;
+}
+
+.mostrar-wrap .form-select {
+    width: auto;
+    border-radius: 8px;
+    border-color: #e0e4f0;
+    font-size: 13px;
+    padding: 4px 28px 4px 10px;
+}
+
+.mascotas-table {
+    margin-bottom: 0;
+}
+
+.mascotas-table thead tr {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+}
+
+.mascotas-table thead th {
+    font-size: 13px;
+    font-weight: 600;
+    color: white !important;
+    padding: 14px 16px;
+    border: none !important;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.mascotas-table tbody tr {
+    transition: background 0.2s;
+}
+
+.mascotas-table tbody tr:hover {
+    background: #f5f7ff;
+}
+
+.mascotas-table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #444;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+}
+
+.mascotas-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==================== AVATAR MASCOTA ==================== */
+.pet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #43b89c, #2d8c6e);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.pet-name {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 14px;
+}
+
+.pet-gender-small {
+    font-size: 12px;
+    color: #999;
+}
+
+.pet-breed {
+    font-weight: 600;
+    color: #333;
+    font-size: 13px;
+}
+
+.pet-species-small {
+    font-size: 12px;
+    color: #999;
+}
+
+.owner-ref {
+    font-size: 13px;
+    color: #4a6cf7;
+    font-weight: 500;
+}
+
+/* ==================== BADGE GÉNERO ==================== */
+.badge-gender {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-gender.macho {
+    background: #e3f0ff;
+    color: #1565c0;
+}
+
+.badge-gender.hembra {
+    background: #fce4f0;
+    color: #ad1457;
+}
+
+/* ==================== BADGE ESTADO ==================== */
+.badge-estado {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-estado.activo {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-estado.inactivo {
+    background: #fdecea;
+    color: #c62828;
+}
+
+.badge-estado::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    display: inline-block;
+}
+
+/* ==================== TAGS EN TABLA ==================== */
+.tags-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: 180px;
+}
+
+.tags-cell .tag-vacuna {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tags-cell .tag-alergia {
+    background: #fff3e0;
+    color: #e65100;
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tag-none {
+    color: #bbb;
+    font-size: 13px;
+}
+
+/* ==================== ACCIONES FILA ==================== */
+.btn-accion {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-size: 16px;
+    color: #888;
+}
+
+.btn-accion:hover {
+    background: #eef3ff;
+    color: #4a6cf7;
+}
+
+.btn-accion.danger:hover {
+    background: #fdecea;
+    color: #c62828;
+}
+
+/* ==================== PAGINACIÓN ==================== */
+.paginacion-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid #f0f2f8;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.paginacion-info {
+    font-size: 13px;
+    color: #888;
+}
+
+.paginacion-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-pag {
+    background: white;
+    border: 1.5px solid #e0e4f0;
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-pag:hover:not(:disabled) {
+    border-color: #4a6cf7;
+    color: #4a6cf7;
+    background: #f0f4ff;
+}
+
+.btn-pag.activo {
+    background: #4a6cf7;
+    border-color: #4a6cf7;
+    color: white;
+}
+
+.btn-pag:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ==================== MODAL ==================== */
+.modal-mascota {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-mascota-header {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    color: white;
+    padding: 20px 24px;
+    border: none;
+}
+
+.modal-mascota-header .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.modal-mascota-header .modal-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+
+.mascota-form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3a8c;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.mascota-form-control {
+    border-radius: 10px;
+    border-color: #e0e4f0;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mascota-form-control:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+}
+
+/* ==================== BÚSQUEDA DUEÑO ==================== */
+.owner-search-wrap {
+    position: relative;
+}
+
+.owner-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1.5px solid #e0e4f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    z-index: 1050;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.owner-option {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f0f2f8;
+}
+
+.owner-option:last-child {
+    border-bottom: none;
+}
+
+.owner-option:hover {
+    background: #f0f4ff;
+}
+
+.owner-option strong {
+    color: #2d3a8c;
+}
+
+.owner-option span {
+    font-size: 12px;
+    color: #999;
+}
+
+.owner-option.no-result {
+    color: #999;
+    cursor: default;
+    font-style: italic;
+    justify-content: center;
+}
+
+.owner-option.no-result:hover {
+    background: white;
+}
+
+/* ==================== TAGS EN MODAL ==================== */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    min-height: 10px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tag button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+    color: inherit;
+}
+
+.tag button:hover {
+    opacity: 1;
+}
+
+.tag.tag-vacuna {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.tag.tag-alergia {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .mascotas-container {
+        padding-top: 15px;
+    }
+
+    .mascotas-title {
+        font-size: 20px;
+    }
+
+    .acciones-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filtros-bar {
+        padding: 12px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtro-input-wrap {
+        min-width: unset;
+    }
+
+    .table-top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mascotas-table thead th,
+    .mascotas-table tbody td {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .pet-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
+    }
+
+    .paginacion-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tags-cell {
+        max-width: 120px;
+    }
+}

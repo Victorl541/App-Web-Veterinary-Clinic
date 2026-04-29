@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultas</title>
+  <link rel="stylesheet" th:href="@{/css/styleprincipal.css}">
+  <link rel="stylesheet" th:href="@{/css/consultas.css}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta name="csrf-token" th:content="${_csrf.token}"/>
+  <meta name="csrf-header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<header th:replace="~{layout/fragments :: header}"></header>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main>
+  <div class="container-fluid consultas-container">
+
+    <!-- Título -->
+    <div class="mb-4">
+      <h4 class="fw-bold consultas-title">Consultas</h4>
+      <p class="consultas-subtitle">Registro de consultas veterinarias</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6">
+        <label class="form-label filtro-label">Propietario</label>
+        <div class="input-group filtro-input">
+          <span class="input-group-text">👤</span>
+          <input type="text" class="form-control" id="buscarPropietario"
+                 placeholder="Buscar por nombre o cédula">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label filtro-label">Mascota</label>
+        <div class="input-group filtro-input">
+          <span class="input-group-text">🐾</span>
+          <input type="text" class="form-control" id="buscarMascota"
+                 placeholder="Buscar por nombre de mascota">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+      <table class="table table-hover align-middle consultas-table">
+        <thead class="table-head">
+        <tr>
+          <th>Propietario</th>
+          <th>Cédula</th>
+          <th>Correo</th>
+          <th>Mascota</th>
+          <th>Especie</th>
+          <th class="text-center">Consulta</th>
+        </tr>
+        </thead>
+        <tbody id="tablaResultados">
+        <tr th:each="owner : ${owners}">
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="owner-avatar"
+                   th:text="${#strings.toUpperCase(#strings.substring(owner.name, 0, 2))}">OW</div>
+              <div>
+                <div class="owner-name" th:text="${owner.name}">Nombre</div>
+                <div class="owner-address" th:text="${owner.address}">Dirección</div>
+              </div>
+            </div>
+          </td>
+          <td th:text="${owner.cedula}">123456</td>
+          <td th:text="${owner.email}">correo@mail.com</td>
+          <td colspan="3" class="p-0">
+            <table class="table table-sm mb-0 mascotas-inner">
+              <tr th:each="pet : ${owner.pets}" th:if="${pet.active}">
+                <td class="ps-3">
+                  <span class="badge-mascota" th:text="${pet.name}">Mascota</span>
+                </td>
+                <td>
+                                        <span class="badge rounded-pill especie-badge"
+                                              th:text="${pet.breed.species.name}">Especie</span>
+                </td>
+                <td class="text-center">
+                  <button class="btn-consulta"
+                          th:attr="onclick='abrirConsulta(' + ${pet.id} + ', \'' + ${pet.name} + '\')'">
+                    ➕ Registrar consulta
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL REGISTRAR CONSULTA -->
+<div class="modal fade" id="modalConsulta" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content modal-consulta">
+      <div class="modal-header modal-consulta-header">
+        <div>
+          <h5 class="modal-title" id="modalConsultaTitulo">Registrar consulta</h5>
+          <p class="modal-subtitle" id="modalConsultaSubtitulo">Complete los datos de la consulta</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="petIdConsulta">
+
+        <div class="row g-3">
+
+          <!-- Fecha y hora -->
+          <div class="col-12 col-md-6">
+            <label class="form-label consulta-label">Fecha y hora</label>
+            <input type="datetime-local" class="form-control" id="fechaConsulta">
+          </div>
+
+          <!-- Motivo -->
+          <div class="col-12 col-md-6">
+            <label class="form-label consulta-label">Motivo</label>
+            <input type="text" class="form-control" id="motivoConsulta"
+                   placeholder="Motivo de la consulta">
+          </div>
+
+          <!-- Peso -->
+          <div class="col-12 col-md-4">
+            <label class="form-label consulta-label">Peso (kg)</label>
+            <input type="number" class="form-control" id="pesoConsulta"
+                   step="0.01" min="0" max="99.99" placeholder="Ej: 12.50">
+          </div>
+
+          <!-- Anamnesis -->
+          <div class="col-12 col-md-8">
+            <label class="form-label consulta-label">S: Anamnesis</label>
+            <textarea class="form-control" id="anamnesisConsulta" rows="3"
+                      placeholder="Descripción subjetiva del paciente..."></textarea>
+          </div>
+
+          <!-- Diagnósticos -->
+          <div class="col-12">
+            <label class="form-label consulta-label">I: Diagnósticos</label>
+            <div class="diagnosticos-wrapper">
+              <div id="diagnosticosTags" class="diagnosticos-tags"></div>
+              <input type="text" id="diagnosticosInput"
+                     class="diagnosticos-input"
+                     placeholder="Escribir diagnóstico...">
+              <div id="diagnosticosSugerencias" class="diagnosticos-sugerencias"></div>
+            </div>
+            <input type="hidden" id="diagnosticosIds">
+          </div>
+
+          <!-- Procedimiento -->
+          <div class="col-12 col-md-6">
+            <label class="form-label consulta-label">P: Procedimiento</label>
+            <textarea class="form-control" id="procedimientoConsulta" rows="3"
+                      placeholder="Procedimiento realizado..."></textarea>
+          </div>
+
+          <!-- Observaciones -->
+          <div class="col-12 col-md-6">
+            <label class="form-label consulta-label">Observaciones</label>
+            <textarea class="form-control" id="observacionesConsulta" rows="3"
+                      placeholder="Observaciones adicionales..."></textarea>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardarConsulta">
+          <span class="spinner-border spinner-border-sm me-2 d-none" id="spinnerConsulta"></span>
+          Guardar consulta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+<div th:replace="~{layout/fragments :: scripts}"></div>
+
+<script>
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+  let diagnosticosSeleccionados = [];
+
+  // Paginación
+  const filas = document.querySelectorAll('#tablaResultados tr');
+  let mostradas = 6;
+
+  function mostrarFilas() {
+    filas.forEach((fila, index) => {
+      fila.style.display = index < mostradas ? '' : 'none';
+    });
+  }
+  mostrarFilas();
+
+  if (filas.length > 6) {
+    const btnVerMas = document.createElement('button');
+    btnVerMas.textContent = 'Ver más';
+    btnVerMas.className = 'btn-ver-mas';
+    btnVerMas.onclick = () => {
+      mostradas = mostradas === 6 ? filas.length : 6;
+      btnVerMas.textContent = mostradas === 6 ? 'Ver más' : 'Ver menos';
+      mostrarFilas();
+    };
+    document.querySelector('.table-responsive').after(btnVerMas);
+  }
+
+  // Filtros
+  document.getElementById('buscarPropietario').addEventListener('input', filtrar);
+  document.getElementById('buscarMascota').addEventListener('input', filtrar);
+
+  function filtrar() {
+    const textoPropietario = document.getElementById('buscarPropietario').value.toLowerCase();
+    const textoMascota = document.getElementById('buscarMascota').value.toLowerCase();
+    filas.forEach(fila => {
+      const nombrePropietario = fila.querySelector('.owner-name')?.textContent.toLowerCase() || '';
+      const cedula = fila.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+      const nombresMascotas = Array.from(fila.querySelectorAll('.badge-mascota'))
+              .map(el => el.textContent.toLowerCase()).join(' ');
+      const matchPropietario = nombrePropietario.includes(textoPropietario) ||
+              cedula.includes(textoPropietario);
+      const matchMascota = textoMascota === '' || nombresMascotas.includes(textoMascota);
+      fila.style.display = matchPropietario && matchMascota ? '' : 'none';
+    });
+  }
+
+  // Abrir modal consulta
+  function abrirConsulta(petId, petName) {
+    document.getElementById('petIdConsulta').value = petId;
+    document.getElementById('modalConsultaTitulo').textContent = 'Registrar consulta - ' + petName;
+    document.getElementById('modalConsultaSubtitulo').textContent = 'Complete los datos de la consulta';
+
+    // Fecha y hora actual por defecto
+    const ahora = new Date();
+    const offset = ahora.getTimezoneOffset() * 60000;
+    const local = new Date(ahora - offset).toISOString().slice(0, 16);
+    document.getElementById('fechaConsulta').value = local;
+
+    // Limpiar campos
+    document.getElementById('motivoConsulta').value = '';
+    document.getElementById('pesoConsulta').value = '';
+    document.getElementById('anamnesisConsulta').value = '';
+    document.getElementById('procedimientoConsulta').value = '';
+    document.getElementById('observacionesConsulta').value = '';
+    document.getElementById('diagnosticosTags').innerHTML = '';
+    document.getElementById('diagnosticosInput').value = '';
+    document.getElementById('diagnosticosIds').value = '';
+    diagnosticosSeleccionados = [];
+
+    const modal = new bootstrap.Modal(document.getElementById('modalConsulta'));
+    modal.show();
+  }
+
+  // Búsqueda de diagnósticos con sugerencias
+  document.getElementById('diagnosticosInput').addEventListener('input', function() {
+    const texto = this.value.trim();
+    const sugerencias = document.getElementById('diagnosticosSugerencias');
+
+    if (texto.length < 2) {
+      sugerencias.innerHTML = '';
+      sugerencias.style.display = 'none';
+      return;
+    }
+
+    fetch(`/consultas/diagnosticos?search=${encodeURIComponent(texto)}`)
+            .then(res => res.json())
+            .then(data => {
+              sugerencias.innerHTML = '';
+              if (data.length === 0) {
+                sugerencias.style.display = 'none';
+                return;
+              }
+              sugerencias.style.display = 'block';
+              data.slice(0, 3).forEach(diag => {
+                const div = document.createElement('div');
+                div.className = 'sugerencia-item';
+                div.textContent = diag.nombre;
+                div.onclick = () => agregarDiagnostico(diag);
+                sugerencias.appendChild(div);
+              });
+            });
+  });
+
+  function agregarDiagnostico(diag) {
+    if (diagnosticosSeleccionados.find(d => d.id === diag.id)) return;
+    diagnosticosSeleccionados.push(diag);
+
+    const tag = document.createElement('span');
+    tag.className = 'diagnostico-tag';
+    tag.innerHTML = `${diag.nombre} <span onclick="eliminarDiagnostico(${diag.id}, this.parentElement)">×</span>`;
+    document.getElementById('diagnosticosTags').appendChild(tag);
+
+    document.getElementById('diagnosticosInput').value = '';
+    document.getElementById('diagnosticosSugerencias').style.display = 'none';
+    actualizarDiagnosticosIds();
+  }
+
+  function eliminarDiagnostico(id, tag) {
+    diagnosticosSeleccionados = diagnosticosSeleccionados.filter(d => d.id !== id);
+    tag.remove();
+    actualizarDiagnosticosIds();
+  }
+
+  function actualizarDiagnosticosIds() {
+    document.getElementById('diagnosticosIds').value =
+            diagnosticosSeleccionados.map(d => d.id).join(',');
+  }
+
+  // Cerrar sugerencias al hacer click fuera
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#diagnosticosInput') && !e.target.closest('#diagnosticosSugerencias')) {
+      document.getElementById('diagnosticosSugerencias').style.display = 'none';
+    }
+  });
+
+  // Guardar consulta
+  document.getElementById('btnGuardarConsulta').addEventListener('click', function() {
+    const petId = document.getElementById('petIdConsulta').value;
+    const fecha = document.getElementById('fechaConsulta').value;
+    const motivo = document.getElementById('motivoConsulta').value.trim();
+    const peso = document.getElementById('pesoConsulta').value;
+    const anamnesis = document.getElementById('anamnesisConsulta').value.trim();
+    const procedimiento = document.getElementById('procedimientoConsulta').value.trim();
+    const observaciones = document.getElementById('observacionesConsulta').value.trim();
+    const diagnosticosIds = document.getElementById('diagnosticosIds').value;
+
+    if (!fecha) { mostrarAlerta('Selecciona la fecha y hora', 'warning'); return; }
+    if (!motivo) { mostrarAlerta('Ingresa el motivo de la consulta', 'warning'); return; }
+    if (!peso) { mostrarAlerta('Ingresa el peso de la mascota', 'warning'); return; }
+    if (!procedimiento) { mostrarAlerta('Ingresa el procedimiento realizado', 'warning'); return; }
+
+    const btn = this;
+    const spinner = document.getElementById('spinnerConsulta');
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    fetch('/consultas/guardar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        [csrfHeader]: csrfToken
+      },
+      body: new URLSearchParams({
+        petId, fecha, motivo, peso, anamnesis,
+        procedimiento, observaciones, diagnosticosIds
+      })
+    })
+            .then(res => res.json())
+            .then(data => {
+              spinner.classList.add('d-none');
+              btn.disabled = false;
+              if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById('modalConsulta')).hide();
+                mostrarAlerta('Consulta registrada exitosamente', 'success');
+              } else {
+                mostrarAlerta(data.message || 'Error al guardar', 'danger');
+              }
+            })
+            .catch(() => {
+              spinner.classList.add('d-none');
+              btn.disabled = false;
+              mostrarAlerta('Error al procesar la solicitud', 'danger');
+            });
+  });
+
+  function mostrarAlerta(mensaje, tipo = 'info') {
+    const alerta = document.createElement('div');
+    alerta.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+    alerta.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alerta.innerHTML = `${mensaje}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+    document.body.appendChild(alerta);
+    setTimeout(() => alerta.remove(), 4000);
+  }
+</script>
+
+</body>
+</html>

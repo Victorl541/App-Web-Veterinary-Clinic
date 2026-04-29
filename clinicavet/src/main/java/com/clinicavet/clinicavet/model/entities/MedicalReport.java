@@ -25,7 +25,7 @@ public class MedicalReport {
     private Pet pet;
 
     @ManyToOne
-    @JoinColumn(name = "idcita", nullable = false)
+    @JoinColumn(name = "idcita", nullable = true)
     private Appointment appointment;
 
     @ManyToOne

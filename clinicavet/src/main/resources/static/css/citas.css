@@ -1,0 +1,365 @@
+/* ==================== CITAS ==================== */
+.citas-container {
+    padding-top: 25px;
+}
+
+.citas-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.citas-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* ==================== FORMULARIO ==================== */
+.form-card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    height: 100%;
+}
+
+.form-card-title {
+    color: #2d3a8c;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #eef3ff;
+}
+
+.form-card .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.form-card .form-control,
+.form-card .form-select {
+    border-radius: 10px;
+    border-color: #e0e4f0;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-card .form-control:focus,
+.form-card .form-select:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+}
+
+.form-card .input-group-text {
+    border-radius: 10px 0 0 10px;
+    border-color: #e0e4f0;
+    font-size: 16px;
+}
+
+.form-card .input-group .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+}
+
+/* PROPIETARIO SELECCIONADO */
+.alert-light {
+    background: #f7f9ff;
+    border: 1px solid #e6eaf5;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.owner-avatar-small {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+/* ==================== DROPDOWN BÚSQUEDA ==================== */
+.dropdown-results {
+    position: absolute;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    z-index: 1000;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #e6eaf5;
+    margin-top: 4px;
+}
+
+.dropdown-results:empty {
+    display: none;
+}
+
+.dropdown-item-custom {
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f2f8;
+    transition: background 0.2s;
+}
+
+.dropdown-item-custom:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item-custom:hover {
+    background: #f7f9ff;
+}
+
+/* ==================== CALENDARIO ==================== */
+.calendar-card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    height: 100%;
+}
+
+/* FULLCALENDAR PERSONALIZACIONES */
+.fc {
+    font-family: inherit;
+}
+
+.fc-toolbar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3a8c;
+}
+
+.fc-button {
+    background: #eef3ff !important;
+    color: #4a6cf7 !important;
+    border: 1px solid #d4dff7 !important;
+    font-weight: 600;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    font-size: 13px;
+}
+
+.fc-button:hover {
+    background: #4a6cf7 !important;
+    color: white !important;
+    border-color: #4a6cf7 !important;
+}
+
+.fc-button-active {
+    background: #4a6cf7 !important;
+    color: white !important;
+    border-color: #4a6cf7 !important;
+}
+
+.fc-col-header {
+    background: #f7f9ff;
+    padding: 12px !important;
+}
+
+.fc-col-header-cell {
+    color: #2d3a8c;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.fc-daygrid-day-number {
+    padding: 6px 12px;
+    color: #2d3a8c;
+    font-weight: 600;
+}
+
+.fc-event {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 4px 8px !important;
+}
+
+.fc-event-title {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}
+
+/* ==================== MODAL DETALLES CITA ==================== */
+.modal-cita {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-cita-header {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    color: white;
+    padding: 20px 24px;
+    border: none;
+}
+
+.detalles-cita {
+    padding: 12px 0;
+}
+
+.detalle-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.detalle-label {
+    font-weight: 700;
+    color: #2d3a8c;
+    min-width: 150px;
+    font-size: 13px;
+}
+
+.detalle-valor {
+    color: #444;
+    font-size: 14px;
+}
+
+/* ==================== BOTONES ==================== */
+.btn-primary {
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s;
+    padding: 10px 20px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 108, 247, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.alert-info {
+    background: #eef3ff;
+    border-color: #d4dff7;
+    color: #2d3a8c;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 992px) {
+    .calendar-card {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .citas-container {
+        padding-top: 15px;
+    }
+
+    .citas-title {
+        font-size: 20px;
+    }
+
+    .form-card {
+        padding: 16px;
+    }
+
+    .form-card-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .calendar-card {
+        padding: 12px;
+    }
+
+    .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .fc-toolbar-title {
+        font-size: 16px;
+        order: 2;
+        width: 100%;
+        text-align: center;
+    }
+
+    .fc-button {
+        padding: 4px 8px !important;
+        font-size: 12px !important;
+    }
+
+    .dropdown-item-custom {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .detalle-label {
+        min-width: 120px;
+        font-size: 12px;
+    }
+
+    .detalle-valor {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .citas-title {
+        font-size: 18px;
+    }
+
+    .citas-subtitle {
+        font-size: 12px;
+    }
+
+    .form-card {
+        padding: 12px;
+    }
+
+    .form-card .form-label {
+        font-size: 12px;
+    }
+
+    .form-card .form-control,
+    .form-card .form-select {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+
+    .detalle-item {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+
+    .detalle-label {
+        min-width: unset;
+    }
+
+    .fc-toolbar {
+        flex-direction: column;
+    }
+
+    .fc-toolbar-title {
+        order: 0;
+        width: auto;
+        margin-bottom: 8px;
+    }
+}

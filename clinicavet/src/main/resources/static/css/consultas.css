@@ -1,0 +1,323 @@
+/* ==================== CONSULTAS ==================== */
+.consultas-container {
+    padding-top: 25px;
+}
+
+.consultas-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.consultas-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* FILTROS */
+.filtro-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.filtro-input .input-group-text {
+    background: white;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    border-color: #e0e4f0;
+}
+
+.filtro-input .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    border-color: #e0e4f0;
+    font-size: 14px;
+}
+
+.filtro-input .form-control:focus {
+    box-shadow: none;
+    border-color: #4a6cf7;
+}
+
+/* TABLA */
+.consultas-table {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: none;
+}
+
+.table-head {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+}
+
+.table-head th {
+    font-size: 13px;
+    font-weight: 600;
+    color: white !important;
+    padding: 14px 16px;
+    border: none !important;
+    letter-spacing: 0.3px;
+}
+
+.consultas-table tbody tr {
+    transition: background 0.2s;
+}
+
+.consultas-table tbody tr:hover {
+    background: #f5f7ff;
+}
+
+.consultas-table tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #444;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+}
+
+/* AVATAR */
+.owner-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.owner-name {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 14px;
+}
+
+.owner-address {
+    font-size: 12px;
+    color: #999;
+}
+
+/* TABLA INTERNA */
+.mascotas-inner {
+    margin: 0;
+    background: transparent;
+}
+
+.mascotas-inner td {
+    padding: 10px 16px !important;
+    font-size: 13px;
+    border-bottom: 1px solid #f5f5f5 !important;
+    vertical-align: middle;
+}
+
+.mascotas-inner tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* BADGES */
+.especie-badge {
+    background: #eef3ff;
+    color: #4a6cf7;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+}
+
+.badge-mascota {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 13px;
+}
+
+/* BOTÓN CONSULTA */
+.btn-consulta {
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-consulta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74,108,247,0.3);
+}
+
+/* VER MÁS */
+.btn-ver-mas {
+    display: block;
+    margin: 16px auto 0;
+    background: #eef3ff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 24px;
+    font-size: 14px;
+    color: #4a6cf7;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-ver-mas:hover {
+    background: #4a6cf7;
+    color: white;
+}
+
+/* MODAL */
+.modal-consulta {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-consulta-header {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    color: white;
+    padding: 20px 24px;
+    border: none;
+}
+
+.modal-consulta-header .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.modal-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+
+.consulta-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3a8c;
+    margin-bottom: 6px;
+}
+
+/* DIAGNÓSTICOS CON TAGS */
+.diagnosticos-wrapper {
+    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+    min-height: 46px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.diagnosticos-wrapper:focus-within {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74,108,247,0.15);
+}
+
+.diagnosticos-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.diagnostico-tag {
+    background: #eef3ff;
+    color: #4a6cf7;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.diagnostico-tag span {
+    cursor: pointer;
+    font-size: 14px;
+    color: #6a3de8;
+    font-weight: 700;
+}
+
+.diagnostico-tag span:hover {
+    color: #e74c3c;
+}
+
+.diagnosticos-input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    flex: 1;
+    min-width: 150px;
+    padding: 2px 4px;
+}
+
+.diagnosticos-sugerencias {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    z-index: 1000;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.sugerencia-item {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sugerencia-item:hover {
+    background: #f0f4ff;
+    color: #4a6cf7;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .consultas-container {
+        padding-top: 15px;
+    }
+
+    .table-head th {
+        font-size: 12px;
+        padding: 12px 10px;
+    }
+
+    .consultas-table tbody td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .owner-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
+    }
+
+    .btn-consulta {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+}

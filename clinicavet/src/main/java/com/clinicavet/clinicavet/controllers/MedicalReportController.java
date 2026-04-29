@@ -52,7 +52,8 @@ public class MedicalReportController {
         List<MedicalReport> informes = medicalReportService.findByPetId(idMascota);
         return informes.stream().map(i -> {
             Map<String, Object> map = new LinkedHashMap<>();
-            map.put("fecha", i.getAppointment().getDate().toString());
+            map.put("fecha", i.getAppointment() != null ?
+                    i.getAppointment().getDate().toString() : "Sin cita");
             map.put("medico", i.getUser().getName());
             map.put("peso", i.getWeight());
             map.put("anamnesis", i.getAnamnesis());

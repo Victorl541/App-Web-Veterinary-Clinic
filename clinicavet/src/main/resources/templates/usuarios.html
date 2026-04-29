@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+
+    <link rel="stylesheet" th:href="@{/css/styleprincipal.css}">
+    <link rel="stylesheet" th:href="@{/css/usuarios.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta name="csrf-token" th:content="${_csrf.token}"/>
+    <meta name="csrf-header" th:content="${_csrf.headerName}"/>
+</head>
+
+<body>
+
+<header th:replace="~{layout/fragments :: header}"></header>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main>
+    <div class="container-fluid usuarios-container">
+
+        <!-- TÍTULO -->
+        <div class="mb-4">
+            <h4 class="fw-bold usuarios-title">Gestión de usuarios</h4>
+            <p class="usuarios-subtitle">Administración de usuarios del sistema</p>
+        </div>
+
+        <!-- ACCIONES HEADER -->
+        <div class="acciones-header">
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn-inactivos" id="btnToggleInactivos" onclick="toggleInactivos()">
+                    👥 Usuarios inactivos
+                </button>
+            </div>
+            <button class="btn-registrar" onclick="abrirModalCrear()">
+                ➕ Registrar usuario
+            </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros-bar">
+            <span class="filtro-label">Buscar:</span>
+            <div class="input-group filtro-input-wrap">
+                <span class="input-group-text">🔍</span>
+                <input type="text" class="form-control" id="buscarUsuario"
+                       placeholder="Nombre o correo electrónico">
+            </div>
+            <div class="filtro-select-wrap">
+                <select class="form-select" id="filtroRol" onchange="filtrar()">
+                    <option value="">Todos los roles</option>
+                    <option th:each="r : ${roles}" th:value="${r.name}" th:text="${r.name}"></option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TABLA -->
+        <div class="usuarios-table-card">
+
+            <div class="table-top-bar">
+                <div class="mostrar-wrap">
+                    Mostrar
+                    <select class="form-select" id="selectMostrar" onchange="cambiarPorPagina()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    registros
+                </div>
+                <div class="table-info-text" id="textoInfo">Cargando...</div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle usuarios-table">
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tablaUsuarios">
+                    <tr th:each="u : ${usuarios}"
+                        th:data-nombre="${u.name}"
+                        th:data-correo="${u.email}"
+                        th:data-rol="${u.role != null ? u.role.name : ''}"
+                        th:data-activo="${u.active}">
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="user-avatar"
+                                     th:text="${#strings.toUpperCase(#strings.substring(u.name, 0, 2))}">US</div>
+                                <div>
+                                    <div class="user-name" th:text="${u.name}">Nombre</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${u.email}">correo@mail.com</td>
+                        <td>
+                            <span class="badge-rol"
+                                  th:classappend="${u.role != null ? u.role.name : 'sin-rol'}"
+                                  th:text="${u.role != null ? u.role.name : 'Sin rol'}">Rol</span>
+                        </td>
+                        <td class="text-center">
+                            <span th:if="${u.active}" class="badge-estado activo">Activo</span>
+                            <span th:unless="${u.active}" class="badge-estado inactivo">Inactivo</span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn-accion btn-editar" title="Editar"
+                                    th:data-id="${u.id}"
+                                    th:data-nombre="${u.name}"
+                                    th:data-correo="${u.email}"
+                                    th:data-rol-id="${u.role != null ? u.role.id : 0}"
+                                    th:data-activo="${u.active}">
+                                ✏️
+                            </button>
+                            <button class="btn-accion danger btn-estado" title="Cambiar estado"
+                                    th:data-id="${u.id}"
+                                    th:data-activo="${u.active}">
+                                <span th:if="${u.active}">🔒</span>
+                                <span th:unless="${u.active}">🔓</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="paginacion-bar">
+                <div class="paginacion-info" id="paginacionInfo">-</div>
+                <div class="paginacion-btns" id="paginacionBtns"></div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+<!-- MODAL CREAR / EDITAR USUARIO -->
+<div class="modal fade" id="modalUsuario" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-usuario">
+            <div class="modal-header modal-usuario-header">
+                <div>
+                    <h5 class="modal-title" id="modalUsuarioTitulo">Registrar usuario</h5>
+                    <p class="modal-subtitle" id="modalUsuarioSubtitulo">Complete los datos del usuario</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="usuarioId">
+
+                <div class="row g-3">
+                    <!-- Nombre -->
+                    <div class="col-12">
+                        <label class="usuario-form-label">Nombre completo</label>
+                        <input type="text" class="form-control usuario-form-control"
+                               id="usuarioNombre" placeholder="Ingrese el nombre completo"
+                               maxlength="25">
+                    </div>
+
+                    <!-- Correo -->
+                    <div class="col-12">
+                        <label class="usuario-form-label">Correo electrónico</label>
+                        <input type="email" class="form-control usuario-form-control"
+                               id="usuarioCorreo" placeholder="correo@ejemplo.com">
+                    </div>
+
+                    <!-- Contraseña (solo en creación) -->
+                    <div class="col-12" id="campoContrasena">
+                        <label class="usuario-form-label">Contraseña</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control usuario-form-control"
+                                   id="usuarioContrasena" placeholder="Mínimo 6 caracteres"
+                                   style="border-radius: 10px 0 0 10px;">
+                            <button class="btn password-toggle" type="button"
+                                    onclick="togglePassword()">👁️</button>
+                        </div>
+                    </div>
+
+                    <!-- Rol -->
+                    <div class="col-12">
+                        <label class="usuario-form-label">Rol</label>
+                        <select class="form-select usuario-form-control" id="usuarioRol">
+                            <option value="">Seleccione un rol</option>
+                            <option th:each="r : ${roles}"
+                                    th:if="${r.name != 'administrador'}"
+                                    th:value="${r.id}"
+                                    th:text="${r.name}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer px-4 pb-4">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarUsuario"
+                        onclick="guardarUsuario()">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" id="spinnerUsuario"></span>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+<div th:replace="~{layout/fragments :: scripts}"></div>
+
+<script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
+    /* ====================================
+       PAGINACIÓN Y FILTROS
+    ==================================== */
+    let paginaActual = 1;
+    let porPagina = 10;
+    let mostrarInactivos = false;
+    let filasTodas = [];
+
+    function inicializar() {
+        filasTodas = Array.from(document.querySelectorAll('#tablaUsuarios tr'));
+        document.getElementById('buscarUsuario').addEventListener('input', () => {
+            paginaActual = 1;
+            renderTabla();
+        });
+        renderTabla();
+    }
+
+    function filtrar() {
+        paginaActual = 1;
+        renderTabla();
+    }
+
+    function toggleInactivos() {
+        mostrarInactivos = !mostrarInactivos;
+        const btn = document.getElementById('btnToggleInactivos');
+        btn.classList.toggle('activo', mostrarInactivos);
+        btn.textContent = mostrarInactivos ? '✅ Ver todos' : '👥 Usuarios inactivos';
+        paginaActual = 1;
+        renderTabla();
+    }
+
+    function cambiarPorPagina() {
+        porPagina = parseInt(document.getElementById('selectMostrar').value);
+        paginaActual = 1;
+        renderTabla();
+    }
+
+    function renderTabla() {
+        const textoBuscar = document.getElementById('buscarUsuario').value.toLowerCase();
+        const rolFiltro = document.getElementById('filtroRol').value.toLowerCase();
+
+        const filasFiltradas = filasTodas.filter(fila => {
+            const nombre = (fila.dataset.nombre || '').toLowerCase();
+            const correo = (fila.dataset.correo || '').toLowerCase();
+            const rol = (fila.dataset.rol || '').toLowerCase();
+            const activo = fila.dataset.activo === 'true';
+
+            const matchBuscar = nombre.includes(textoBuscar) || correo.includes(textoBuscar);
+            const matchRol = rolFiltro === '' || rol === rolFiltro;
+            const matchEstado = mostrarInactivos ? !activo : activo;
+
+            return matchBuscar && matchRol && matchEstado;
+        });
+
+        const total = filasFiltradas.length;
+        const totalPaginas = Math.max(1, Math.ceil(total / porPagina));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        const inicio = (paginaActual - 1) * porPagina;
+        const fin = Math.min(inicio + porPagina, total);
+
+        // Ocultar todas, mostrar solo las de la página
+        filasTodas.forEach(f => f.style.display = 'none');
+        filasFiltradas.slice(inicio, fin).forEach(f => f.style.display = '');
+
+        // Info
+        document.getElementById('textoInfo').textContent =
+            total === 0 ? 'Sin resultados' :
+                `Mostrando ${inicio + 1} al ${fin} de ${total} registros`;
+        document.getElementById('paginacionInfo').textContent =
+            total === 0 ? '' : `Mostrando registros del ${inicio + 1} al ${fin} de un total de ${total} registros.`;
+
+        // Botones paginación
+        renderPaginacion(totalPaginas);
+    }
+
+    function renderPaginacion(totalPaginas) {
+        const cont = document.getElementById('paginacionBtns');
+        cont.innerHTML = '';
+
+        const btnAnterior = document.createElement('button');
+        btnAnterior.className = 'btn-pag';
+        btnAnterior.textContent = 'Anterior';
+        btnAnterior.disabled = paginaActual === 1;
+        btnAnterior.onclick = () => { paginaActual--; renderTabla(); };
+        cont.appendChild(btnAnterior);
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'btn-pag' + (i === paginaActual ? ' activo' : '');
+            btn.textContent = i;
+            btn.onclick = (function(p) { return () => { paginaActual = p; renderTabla(); }; })(i);
+            cont.appendChild(btn);
+        }
+
+        const btnSiguiente = document.createElement('button');
+        btnSiguiente.className = 'btn-pag';
+        btnSiguiente.textContent = 'Siguiente';
+        btnSiguiente.disabled = paginaActual === totalPaginas;
+        btnSiguiente.onclick = () => { paginaActual++; renderTabla(); };
+        cont.appendChild(btnSiguiente);
+    }
+
+    /* ====================================
+       MODAL CREAR USUARIO
+    ==================================== */
+    function abrirModalCrear() {
+        document.getElementById('usuarioId').value = '';
+        document.getElementById('usuarioNombre').value = '';
+        document.getElementById('usuarioCorreo').value = '';
+        document.getElementById('usuarioContrasena').value = '';
+        document.getElementById('usuarioRol').value = '';
+        document.getElementById('campoContrasena').style.display = 'block';
+        document.getElementById('modalUsuarioTitulo').textContent = 'Registrar usuario';
+        document.getElementById('modalUsuarioSubtitulo').textContent = 'Complete los datos del nuevo usuario';
+        new bootstrap.Modal(document.getElementById('modalUsuario')).show();
+    }
+
+    /* ====================================
+       MODAL EDITAR USUARIO
+    ==================================== */
+    function abrirModalEditar(id, nombre, correo, rolId, activo) {
+        document.getElementById('usuarioId').value = id;
+        document.getElementById('usuarioNombre').value = nombre;
+        document.getElementById('usuarioCorreo').value = correo;
+        document.getElementById('usuarioRol').value = rolId;
+        document.getElementById('campoContrasena').style.display = 'none';
+        document.getElementById('modalUsuarioTitulo').textContent = 'Editar usuario';
+        document.getElementById('modalUsuarioSubtitulo').textContent = 'Modifica los datos del usuario';
+        new bootstrap.Modal(document.getElementById('modalUsuario')).show();
+    }
+
+    /* ====================================
+       GUARDAR USUARIO (CREAR O EDITAR)
+    ==================================== */
+    function guardarUsuario() {
+        const id = document.getElementById('usuarioId').value;
+        const nombre = document.getElementById('usuarioNombre').value.trim();
+        const correo = document.getElementById('usuarioCorreo').value.trim();
+        const contrasena = document.getElementById('usuarioContrasena').value;
+        const rolId = document.getElementById('usuarioRol').value;
+        const esNuevo = !id;
+
+        if (!nombre) { mostrarAlerta('Ingresa el nombre del usuario', 'warning'); return; }
+        if (!correo) { mostrarAlerta('Ingresa el correo electrónico', 'warning'); return; }
+        if (esNuevo && !contrasena) { mostrarAlerta('Ingresa la contraseña', 'warning'); return; }
+        if (!rolId) { mostrarAlerta('Selecciona un rol', 'warning'); return; }
+
+        const btn = document.getElementById('btnGuardarUsuario');
+        const spinner = document.getElementById('spinnerUsuario');
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
+
+        const url = esNuevo ? '/usuarios/crear' : '/usuarios/editar';
+        const params = { nombre, correo, rolId };
+        if (esNuevo) params.contrasena = contrasena;
+        else params.id = id;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                [csrfHeader]: csrfToken
+            },
+            body: new URLSearchParams(params)
+        })
+            .then(res => res.json())
+            .then(data => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalUsuario')).hide();
+                    mostrarAlerta(data.message || 'Usuario guardado exitosamente', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarAlerta(data.message || 'Error al guardar el usuario', 'danger');
+                }
+            })
+            .catch(() => {
+                spinner.classList.add('d-none');
+                btn.disabled = false;
+                mostrarAlerta('Error al procesar la solicitud', 'danger');
+            });
+    }
+
+    /* ====================================
+       CAMBIAR ESTADO (ACTIVAR / DESACTIVAR)
+    ==================================== */
+    function cambiarEstado(id, estadoActual) {
+        const accion = estadoActual ? 'desactivar' : 'activar';
+        if (!confirm(`¿Estás seguro de que deseas ${accion} este usuario?`)) return;
+
+        fetch(`/usuarios/estado/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarAlerta(data.message || 'Estado actualizado', 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarAlerta(data.message || 'Error al cambiar el estado', 'danger');
+                }
+            })
+            .catch(() => mostrarAlerta('Error al procesar la solicitud', 'danger'));
+    }
+
+    /* ====================================
+       TOGGLE CONTRASEÑA
+    ==================================== */
+    function togglePassword() {
+        const input = document.getElementById('usuarioContrasena');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    /* ====================================
+       ALERTA
+    ==================================== */
+    function mostrarAlerta(mensaje, tipo = 'info') {
+        const alerta = document.createElement('div');
+        alerta.className = `alert alert-${tipo} alert-dismissible fade show position-fixed`;
+        alerta.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alerta.innerHTML = `${mensaje}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        document.body.appendChild(alerta);
+        setTimeout(() => alerta.remove(), 4000);
+    }
+
+    /* ====================================
+       INIT
+    ==================================== */
+    document.addEventListener('DOMContentLoaded', function() {
+        inicializar();
+
+        // Delegación de eventos para botones de editar
+        document.getElementById('tablaUsuarios').addEventListener('click', function(e) {
+            const btnEditar = e.target.closest('.btn-editar');
+            const btnEstado = e.target.closest('.btn-estado');
+
+            if (btnEditar) {
+                const d = btnEditar.dataset;
+                abrirModalEditar(d.id, d.nombre, d.correo, d.rolId, d.activo === 'true');
+            }
+
+            if (btnEstado) {
+                const d = btnEstado.dataset;
+                cambiarEstado(d.id, d.activo === 'true');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+
