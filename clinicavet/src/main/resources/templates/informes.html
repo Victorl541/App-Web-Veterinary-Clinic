@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informes médicos</title>
+  <link rel="stylesheet" th:href="@{/css/styleprincipal.css}">
+  <link rel="stylesheet" th:href="@{/css/informes.css}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<header th:replace="~{layout/fragments :: header}"></header>
+<nav th:replace="~{layout/fragments :: navbar}"></nav>
+
+<main>
+  <div class="container-fluid informes-container">
+
+    <!-- Título -->
+    <div class="mb-4">
+      <h4 class="fw-bold informes-title">Informes médicos</h4>
+      <p class="informes-subtitle">Consulta el historial clínico por propietario o mascota</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6">
+        <label class="form-label filtro-label">Propietario</label>
+        <div class="input-group filtro-input">
+          <span class="input-group-text">👤</span>
+          <input type="text" class="form-control" id="buscarPropietario"
+                 placeholder="Buscar por nombre o cédula">
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label filtro-label">Mascota</label>
+        <div class="input-group filtro-input">
+          <span class="input-group-text">🐾</span>
+          <input type="text" class="form-control" id="buscarMascota"
+                 placeholder="Buscar por nombre de mascota">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive">
+      <table class="table table-hover align-middle informes-table">
+        <thead class="table-head">
+        <tr>
+          <th>Propietario</th>
+          <th>Cédula</th>
+          <th>Correo</th>
+          <th>Mascota</th>
+          <th>Especie</th>
+          <th class="text-center">Historial</th>
+        </tr>
+        </thead>
+        <tbody id="tablaResultados">
+        <tr th:each="owner : ${owners}">
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="owner-avatar"
+                   th:text="${#strings.toUpperCase(#strings.substring(owner.name, 0, 2))}">OW</div>
+              <div>
+                <div class="owner-name" th:text="${owner.name}">Nombre</div>
+                <div class="owner-address" th:text="${owner.address}">Dirección</div>
+              </div>
+            </div>
+          </td>
+          <td th:text="${owner.cedula}">123456</td>
+          <td th:text="${owner.email}">correo@mail.com</td>
+          <td colspan="3" class="p-0">
+            <table class="table table-sm mb-0 mascotas-inner">
+              <tr th:each="pet : ${owner.pets}" th:if="${pet.active}">
+                <td class="ps-3">
+                  <span class="badge-mascota" th:text="${pet.name}">Mascota</span>
+                </td>
+                <td>
+                                        <span class="badge rounded-pill especie-badge"
+                                              th:text="${pet.breed.species.name}">Especie</span>
+                </td>
+                <td class="text-center">
+                  <button class="btn-historial"
+                          th:attr="onclick='abrirHistorial(' + ${pet.id} + ', \'' + ${pet.name} + '\')'">
+                    📋 Ver historial
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL HISTORIAL -->
+<div class="modal fade" id="modalHistorial" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content modal-historial">
+      <div class="modal-header modal-historial-header">
+        <div>
+          <h5 class="modal-title" id="modalTitulo">Historial</h5>
+          <p class="modal-subtitle">Consultas registradas</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Cargando historial...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="~{layout/fragments :: footer}"></footer>
+<div th:replace="~{layout/fragments :: scripts}"></div>
+
+<script>
+  // Paginación - mostrar solo 6 filas por defecto
+  const filas = document.querySelectorAll('#tablaResultados tr');
+  let mostradas = 6;
+
+  function mostrarFilas() {
+    filas.forEach((fila, index) => {
+      fila.style.display = index < mostradas ? '' : 'none';
+    });
+  }
+
+  mostrarFilas();
+
+  // Botón ver más
+  if (filas.length > 6) {
+    const btnVerMas = document.createElement('button');
+    btnVerMas.textContent = 'Ver más';
+    btnVerMas.className = 'btn-ver-mas';
+    btnVerMas.onclick = () => {
+      mostradas = mostradas === 6 ? filas.length : 6;
+      btnVerMas.textContent = mostradas === 6 ? 'Ver más' : 'Ver menos';
+      mostrarFilas();
+    };
+    document.querySelector('.table-responsive').after(btnVerMas);
+  }
+
+  // Filtros
+  document.getElementById('buscarPropietario').addEventListener('input', filtrar);
+  document.getElementById('buscarMascota').addEventListener('input', filtrar);
+
+  function filtrar() {
+    const textoPropietario = document.getElementById('buscarPropietario').value.toLowerCase();
+    const textoMascota = document.getElementById('buscarMascota').value.toLowerCase();
+
+    filas.forEach(fila => {
+      const nombrePropietario = fila.querySelector('.owner-name')?.textContent.toLowerCase() || '';
+      const cedula = fila.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+      const nombresMascotas = Array.from(fila.querySelectorAll('.badge-mascota'))
+              .map(el => el.textContent.toLowerCase()).join(' ');
+
+      const matchPropietario = nombrePropietario.includes(textoPropietario) ||
+              cedula.includes(textoPropietario);
+      const matchMascota = textoMascota === '' || nombresMascotas.includes(textoMascota);
+
+      fila.style.display = matchPropietario && matchMascota ? '' : 'none';
+    });
+  }
+
+  // Modal historial
+  function abrirHistorial(idMascota, nombreMascota) {
+    document.getElementById('modalTitulo').textContent = 'Historial de ' + nombreMascota;
+    document.getElementById('modalBody').innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Cargando historial...</p>
+            </div>`;
+
+    const modal = new bootstrap.Modal(document.getElementById('modalHistorial'));
+    modal.show();
+
+    fetch('/informes/historial/' + idMascota)
+            .then(res => res.json())
+            .then(data => {
+              if (data.length === 0) {
+                document.getElementById('modalBody').innerHTML = `
+                        <div class="text-center py-5">
+                            <p class="text-muted">No hay consultas registradas para esta mascota.</p>
+                        </div>`;
+                return;
+              }
+
+              let html = '';
+              data.forEach(informe => {
+                html += `
+                    <div class="consulta-card">
+                        <div class="consulta-header">
+                            <div class="consulta-fecha">📅 ${informe.fecha}</div>
+                            <div class="consulta-medico">👨‍⚕️ ${informe.medico}</div>
+                            <div class="consulta-peso">⚖️ ${informe.peso} kg</div>
+                        </div>
+                        <div class="consulta-body">
+                            <div class="consulta-row">
+                                <span class="consulta-label">Anamnesis</span>
+                                <span class="consulta-value">${informe.anamnesis || 'No registrada'}</span>
+                            </div>
+                            <div class="consulta-row">
+                                <span class="consulta-label">Diagnóstico</span>
+                                <span class="consulta-value">${informe.diagnosticos || 'No registrado'}</span>
+                            </div>
+                            <div class="consulta-row">
+                                <span class="consulta-label">Procedimiento</span>
+                                <span class="consulta-value">${informe.procedimiento}</span>
+                            </div>
+                            <div class="consulta-row">
+                                <span class="consulta-label">Observaciones</span>
+                                <span class="consulta-value">${informe.observaciones || 'Sin observaciones'}</span>
+                            </div>
+                        </div>
+                    </div>`;
+              });
+              document.getElementById('modalBody').innerHTML = html;
+            })
+            .catch(() => {
+              document.getElementById('modalBody').innerHTML = `
+                    <div class="text-center py-5">
+                        <p class="text-danger">Error al cargar el historial.</p>
+                    </div>`;
+            });
+  }
+</script>
+
+</body>
+</html>

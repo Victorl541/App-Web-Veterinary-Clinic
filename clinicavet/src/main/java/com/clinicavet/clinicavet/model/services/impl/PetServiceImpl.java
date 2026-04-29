@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PetServiceImpl implements IPetService {
@@ -62,4 +64,20 @@ public class PetServiceImpl implements IPetService {
             throw new RuntimeException("Error al desactivar mascota", e);
         }
     }
+
+    @Override
+    public Map<String, Long> countBySpecies() {
+        try {
+            List<Pet> all = petRepository.findByActiveTrue();
+            Map<String, Long> result = new LinkedHashMap<>();
+            all.forEach(p -> {
+                String species = p.getBreed().getSpecies().getName();
+                result.put(species, result.getOrDefault(species, 0L) + 1);
+            });
+            return result;
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al contar mascotas por especie", e);
+        }
+    }
+
 }

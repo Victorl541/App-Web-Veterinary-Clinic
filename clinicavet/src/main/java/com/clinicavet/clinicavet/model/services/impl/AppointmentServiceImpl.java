@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AppointmentServiceImpl implements IAppointmentService {
@@ -80,4 +84,33 @@ public class AppointmentServiceImpl implements IAppointmentService {
             throw new RuntimeException("Error al cancelar cita", e);
         }
     }
+
+    @Override
+    public List<Appointment> findByDate(LocalDate date) {
+        try {
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = date.atTime(23, 59, 59);
+            return appointmentRepository.findByDateBetween(start, end);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al buscar citas por fecha", e);
+        }
+    }
+
+    @Override
+    public Map<String, Long> countByMonth() {
+        try {
+            List<Appointment> all = appointmentRepository.findAll();
+            Map<String, Long> result = new LinkedHashMap<>();
+            String[] months = {"Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"};
+            for (String month : months) result.put(month, 0L);
+            all.forEach(a -> {
+                String month = months[a.getDate().getMonthValue() - 1];
+                result.put(month, result.get(month) + 1);
+            });
+            return result;
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error al contar citas por mes", e);
+        }
+    }
+
 }

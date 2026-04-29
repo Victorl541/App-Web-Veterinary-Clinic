@@ -1,0 +1,96 @@
+/* ==================== DASHBOARD ==================== */
+.dashboard-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.dashboard-container {
+    padding-top: 25px;
+}
+
+.dashboard-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* TARJETAS */
+.stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2d3a8c;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* GRAFICAS */
+.chart-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    height: 100%;
+}
+
+.chart-title {
+    color: #2d3a8c;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-size: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .stat-number {
+        font-size: 22px;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .chart-card {
+        padding: 16px;
+    }
+}

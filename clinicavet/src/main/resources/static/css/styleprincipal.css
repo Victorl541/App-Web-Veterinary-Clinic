@@ -7,16 +7,24 @@
 
 body {
     background: #eef3ff;
+    padding-top: 10px;
 }
 
-/* HEADER */
+/* ==================== HEADER ==================== */
 .top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     background: white;
-    padding: 12px 25px;
+    padding: 10px 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #e6eaf5;
+    height: 65px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
 .header-left {
@@ -27,15 +35,17 @@ body {
 
 .logo {
     width: 45px;
+    border-radius: 8px;
 }
 
 .clinic-name {
-    font-weight: bold;
+    font-weight: 700;
     color: #2d3a8c;
-    font-size: 16px;
+    font-size: 17px;
+    letter-spacing: 0.3px;
 }
 
-/* USER DROPDOWN */
+/* ==================== USER DROPDOWN ==================== */
 .user-dropdown {
     position: relative;
 }
@@ -45,40 +55,47 @@ body {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 10px;
-    transition: 0.3s;
+    padding: 6px 10px;
+    border-radius: 12px;
+    transition: background 0.2s;
 }
 
 .user-toggle:hover {
     background: #eef3ff;
 }
 
+.user-toggle span {
+    color: #888;
+    font-size: 12px;
+}
+
 .user-avatar {
     width: 38px;
     height: 38px;
     border-radius: 10px;
-    background: #4a6cf7;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 14px;
     cursor: pointer;
+    box-shadow: 0 3px 8px rgba(74,108,247,0.35);
 }
 
 .user-dropdown-content {
     display: none;
     position: absolute;
     right: 0;
-    top: 55px;
+    top: 52px;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    min-width: 220px;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    min-width: 230px;
     overflow: hidden;
-    z-index: 100;
+    z-index: 1001;
+    border: 1px solid #f0f0f0;
 }
 
 .user-dropdown:hover .user-dropdown-content {
@@ -89,22 +106,23 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 15px;
-    background: #f7f9ff;
+    padding: 16px;
+    background: linear-gradient(135deg, #f0f4ff, #e8eeff);
 }
 
 .user-avatar-lg {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
-    background: #4a6cf7;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
+    font-weight: 700;
+    font-size: 17px;
     flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(74,108,247,0.35);
 }
 
 .user-dropdown-info {
@@ -114,221 +132,248 @@ body {
 }
 
 .user-name {
-    font-weight: bold;
+    font-weight: 700;
     color: #2d3a8c;
     font-size: 14px;
 }
 
 .user-role-badge {
-    background: #e4ebff;
-    color: #4a6cf7;
-    padding: 2px 8px;
+    background: #4a6cf7;
+    color: white;
+    padding: 2px 10px;
     border-radius: 20px;
     font-size: 11px;
-    font-weight: bold;
+    font-weight: 600;
     display: inline-block;
+    letter-spacing: 0.3px;
 }
 
 .user-dropdown-divider {
     height: 1px;
-    background: #e6eaf5;
-    margin: 5px 0;
+    background: #f0f0f0;
+    margin: 4px 0;
 }
 
 .user-dropdown-content a {
-    display: block;
-    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
     color: #444;
     text-decoration: none;
-    transition: 0.3s;
+    transition: background 0.2s;
     font-size: 14px;
-}
-
-.user-dropdown-content a,
-.logout-btn {
-    display: block;
-    padding: 10px 15px;
-    color: #444;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 14px;
-    text-align: left;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 .user-dropdown-content a:hover {
-    background: #f0f4ff;
+    background: #f5f7ff;
     color: #4a6cf7;
 }
 
-.logout-btn {
-    color: #e74c3c !important;
-}
-
-.logout-btn:hover {
-    background: #fef0f0 !important;
-    color: #e74c3c !important;
-}
-
-/* HAMBURGER */
-.hamburger {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #2d3a8c;
-}
-
-/* NAVBAR */
-.main-nav {
-    background: #f7f9ff;
-    padding: 10px 25px;
-    display: flex;
-    justify-content: flex-start;
-    border-bottom: 1px solid #e6eaf5;
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-wrap: wrap;
+.logout-form {
+    margin: 0;
+    padding: 0;
     width: 100%;
 }
 
-.nav-right a,
-.dropdown span {
-    text-decoration: none;
-    color: #555;
-    padding: 8px 14px;
-    border-radius: 10px;
-    transition: 0.3s;
+.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 11px 16px;
     cursor: pointer;
-    display: inline-block;
+    font-size: 14px;
+    color: #e74c3c;
+    transition: background 0.2s;
+    font-family: "Segoe UI", sans-serif;
+    display: block;
 }
 
-.nav-right a:hover,
-.dropdown span:hover {
-    background: #e4ebff;
+.logout-btn:hover {
+    background: #fff5f5;
+    color: #c0392b;
+}
+
+/* ==================== NAVBAR ==================== */
+.main-nav {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: white !important;
+    border-bottom: 1px solid #e6eaf5;
+    padding: 4px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.main-nav .nav-link {
+    color: #555 !important;
+    padding: 7px 14px !important;
+    border-radius: 10px;
+    transition: 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.main-nav .nav-link:hover,
+.main-nav .nav-link:focus {
+    background: #eef3ff;
+    color: #4a6cf7 !important;
+}
+
+.main-nav .nav-link.active {
+    background: #eef3ff;
+    color: #4a6cf7 !important;
+}
+
+.main-nav .dropdown-menu {
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid #f0f0f0;
+    padding: 6px;
+    margin-top: 6px;
+}
+
+.main-nav .dropdown-item {
+    font-size: 14px;
+    padding: 9px 14px;
+    color: #444;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.main-nav .dropdown-item:hover {
+    background: #f0f4ff;
     color: #4a6cf7;
 }
 
-/* DROPDOWN NAVBAR */
-.dropdown {
-    position: relative;
+.main-nav .navbar-toggler {
+    border: none;
+    padding: 4px 8px;
+    color: #2d3a8c;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    left: 0;
-    top: 40px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    min-width: 180px;
-    overflow: hidden;
-    z-index: 100;
+.main-nav .navbar-toggler:focus {
+    box-shadow: none;
 }
 
-.dropdown-content a {
-    display: block;
-    padding: 10px 15px;
-    color: #444;
-    text-decoration: none;
-}
-
-.dropdown-content a:hover {
-    background: #f0f4ff;
-}
-
-.dropdown:hover .dropdown-content,
-.dropdown-content.show {
-    display: block;
-}
-
-/* MAIN */
+/* ==================== MAIN ==================== */
 main {
-    padding: 30px;
+    padding: 30px 25px;
+    min-height: calc(100vh - 115px);
 }
 
-/* RESPONSIVE */
+/* ==================== FOOTER ==================== */
+.footer {
+    background: #2d3a8c;
+    color: white;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    padding: 40px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.footer-brand img {
+    border-radius: 8px;
+}
+
+.footer-section p {
+    font-size: 13px;
+    color: #b0badc;
+    margin-bottom: 6px;
+    line-height: 1.7;
+}
+
+.footer-section h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: white;
+    letter-spacing: 0.3px;
+}
+
+.footer-social,
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-social a,
+.footer-links a {
+    color: #b0badc;
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.footer-social a:hover,
+.footer-links a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    background: #1e2a6e;
+    text-align: center;
+    padding: 14px;
+    font-size: 12px;
+    color: #8898cc;
+    border-top: 1px solid #3a4a9e;
+}
+
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
-    .hamburger {
-        display: block;
+    body {
+        padding-top: 125px;
     }
 
     .main-nav {
-        display: none;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px;
-    }
-
-    .main-nav.open {
-        display: flex;
-    }
-
-    .nav-right {
-        flex-direction: column;
-        width: 100%;
-        gap: 5px;
-    }
-
-    .nav-right a,
-    .dropdown span {
-        width: 100%;
-        padding: 10px 14px;
-    }
-
-    .dropdown-content {
-        position: static;
-        box-shadow: none;
-        border-radius: 0;
-        background: #f0f4ff;
-    }
-
-    .dropdown:hover .dropdown-content {
-        display: none;
-    }
-
-    .dropdown-content.show {
-        display: block;
-    }
-
-    .user-dropdown-content {
-        top: 45px;
-        right: -10px;
+        top: 65px;
     }
 
     .clinic-name {
         font-size: 14px;
     }
 
-    .logout-btn {
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: center;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 14px;
-        color: #e74c3c;
-        transition: 0.3s;
-        font-family: "Segoe UI", sans-serif;
-        display: block;
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        padding: 30px 20px;
     }
 
-    .logout-btn:hover {
-        background: #fef0f0;
-        color: #e74c3c;
+    .user-dropdown-content {
+        right: -5px;
+        min-width: 210px;
     }
 
-    .logout-form {
-        margin: 0;
-        padding: 0;
-        width: 100%;
+    main {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+
+    .clinic-name {
+        display: none;
     }
 }

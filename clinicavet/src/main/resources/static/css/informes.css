@@ -1,0 +1,338 @@
+/* ==================== INFORMES ==================== */
+.informes-container {
+    padding-top: 25px;
+}
+
+.informes-title {
+    color: #2d3a8c;
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.informes-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* ==================== FILTROS ==================== */
+.filtro-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.filtro-input .input-group-text {
+    background: white;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    border-color: #e0e4f0;
+}
+
+.filtro-input .form-control {
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    border-color: #e0e4f0;
+    font-size: 14px;
+}
+
+.filtro-input .form-control:focus {
+    box-shadow: none;
+    border-color: #4a6cf7;
+}
+
+/* ==================== TABLA ==================== */
+.informes-table {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: none;
+}
+
+.table-head {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+}
+
+.table-head th {
+    font-size: 13px;
+    font-weight: 600;
+    color: white !important;
+    padding: 14px 16px;
+    border: none !important;
+    letter-spacing: 0.3px;
+}
+
+.informes-table tbody tr {
+    transition: background 0.2s;
+}
+
+.informes-table tbody tr:hover {
+    background: #f5f7ff;
+}
+
+.informes-table tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #444;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+}
+
+/* ==================== AVATAR PROPIETARIO ==================== */
+.owner-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4a6cf7, #6a3de8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.owner-name {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 14px;
+}
+
+.owner-address {
+    font-size: 12px;
+    color: #999;
+}
+
+/* ==================== TABLA INTERNA MASCOTAS ==================== */
+.mascotas-inner {
+    margin: 0;
+    background: transparent;
+}
+
+.mascotas-inner td {
+    padding: 10px 16px !important;
+    font-size: 13px;
+    border-bottom: 1px solid #f5f5f5 !important;
+    vertical-align: middle;
+}
+
+.mascotas-inner tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* ==================== BADGES ==================== */
+.especie-badge {
+    background: #eef3ff;
+    color: #4a6cf7;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+}
+
+.badge-mascota {
+    font-weight: 600;
+    color: #2d3a8c;
+    font-size: 13px;
+}
+
+/* ==================== BOTÓN HISTORIAL ==================== */
+.btn-historial {
+    background: #eef3ff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #4a6cf7;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-historial:hover {
+    background: #4a6cf7;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74,108,247,0.3);
+}
+
+/* ==================== MODAL ==================== */
+.modal-historial {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+}
+
+.modal-historial-header {
+    background: linear-gradient(135deg, #2d3a8c, #4a6cf7);
+    color: white;
+    padding: 20px 24px;
+    border: none;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+}
+
+.modal-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+
+.modal-body {
+    padding: 20px 24px;
+    background: #f7f9ff;
+}
+
+/* ==================== TARJETA CONSULTA ==================== */
+.consulta-card {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border: 1px solid #e6eaf5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.consulta-header {
+    background: #f7f9ff;
+    padding: 12px 18px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e6eaf5;
+    align-items: center;
+}
+
+.consulta-fecha {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2d3a8c;
+    background: #eef3ff;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.consulta-medico {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+.consulta-peso {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin-left: auto;
+}
+
+.consulta-body {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.consulta-row {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    align-items: flex-start;
+}
+
+.consulta-label {
+    min-width: 120px;
+    font-weight: 700;
+    color: #2d3a8c;
+    flex-shrink: 0;
+}
+
+.consulta-value {
+    color: #444;
+    line-height: 1.6;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .informes-container {
+        padding-top: 15px;
+    }
+
+    .table-head th {
+        font-size: 12px;
+        padding: 12px 10px;
+    }
+
+    .informes-table tbody td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .owner-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
+    }
+
+    .consulta-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .consulta-peso {
+        margin-left: 0;
+    }
+
+    .consulta-row {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .consulta-label {
+        min-width: unset;
+    }
+
+    .btn-historial {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .owner-name {
+        font-size: 13px;
+    }
+
+    .modal-historial-header {
+        padding: 16px;
+    }
+
+    .modal-body {
+        padding: 14px;
+    }
+}
+
+.btn-ver-mas {
+    display: block;
+    margin: 16px auto 0;
+    background: #eef3ff;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 24px;
+    font-size: 14px;
+    color: #4a6cf7;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-ver-mas:hover {
+    background: #4a6cf7;
+    color: white;
+}
