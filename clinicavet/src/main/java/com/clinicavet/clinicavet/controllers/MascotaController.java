@@ -37,9 +37,6 @@ public class MascotaController {
     @Autowired
     private UserModelHelper userModelHelper;
 
-    /**
-     * Mostrar página de mascotas
-     */
     @GetMapping
     @PreAuthorize("hasAnyRole('administrador', 'medico', 'auxiliar')")
     public String mascotasPage(Model model, Principal principal) {
@@ -49,26 +46,22 @@ public class MascotaController {
         model.addAttribute("vaccines",  vaccineService.findAll());
         model.addAttribute("allergies", allergyService.findAll());
 
-        // DTO plano para evitar StackOverflow por referencias circulares Owner <-> Pet
         List<Map<String, Object>> ownerDtos = ownerService.findAll().stream()
                 .filter(Owner::isActive)
                 .map(o -> {
-                    Map<String, Object> dto = new java.util.LinkedHashMap<>();
+                    Map<String, Object> dto = new LinkedHashMap<>();
                     dto.put("id",     o.getId());
                     dto.put("name",   o.getName());
                     dto.put("cedula", o.getCedula() != null ? o.getCedula() : "");
                     dto.put("active", o.isActive());
                     return dto;
                 })
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
 
         model.addAttribute("owners", ownerDtos);
         return "mascotas";
     }
 
-    /**
-     * Crear una nueva mascota
-     */
     @PostMapping("/crear")
     @PreAuthorize("hasAnyRole('administrador', 'medico', 'auxiliar')")
     @ResponseBody
@@ -103,7 +96,11 @@ public class MascotaController {
             pet.setGender(Pet.Gender.valueOf(genero));
             pet.setBirthDate(fechaNaci != null && !fechaNaci.isEmpty() ? LocalDate.parse(fechaNaci) : null);
             pet.setBreed(breed);
+
+            // 🔥 RELACIÓN BIDIRECCIONAL
             pet.setOwner(owner);
+            owner.getPets().add(pet);
+
             pet.setActive(true);
 
             if (vacunaIds != null && !vacunaIds.isEmpty()) {
@@ -139,9 +136,6 @@ public class MascotaController {
         }
     }
 
-    /**
-     * Editar una mascota existente
-     */
     @PostMapping("/editar")
     @PreAuthorize("hasAnyRole('administrador', 'medico', 'auxiliar')")
     @ResponseBody
@@ -183,7 +177,12 @@ public class MascotaController {
             pet.setGender(Pet.Gender.valueOf(genero));
             pet.setBirthDate(fechaNaci != null && !fechaNaci.isEmpty() ? LocalDate.parse(fechaNaci) : null);
             pet.setBreed(breed);
+
+            // 🔥 RELACIÓN BIDIRECCIONAL
             pet.setOwner(owner);
+            if (!owner.getPets().contains(pet)) {
+                owner.getPets().add(pet);
+            }
 
             if (vacunaIds != null && !vacunaIds.isEmpty()) {
                 List<Vaccine> vaccines = vacunaIds.stream()
@@ -218,9 +217,6 @@ public class MascotaController {
         }
     }
 
-    /**
-     * Activar o desactivar una mascota (toggle de estado)
-     */
     @PostMapping("/estado/{id}")
     @PreAuthorize("hasAnyRole('administrador', 'medico', 'auxiliar')")
     @ResponseBody
